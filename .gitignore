@@ -88,4 +88,8 @@ typings/
 # Electron-Forge
 out/
 
-tmp/
+tmp
+
+*.iml
+
+.idea

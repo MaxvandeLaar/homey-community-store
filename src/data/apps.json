@@ -1,0 +1,59 @@
+[
+  {
+    "id": "com.maxvandelaar.webos-plus",
+    "name": "WebOS Plus",
+    "author": "Max van de Laar",
+    "versions": [
+      {
+        "version": "v1.0.0",
+        "repo": "https://github.com/MaxvandeLaar/homey-webos-plus#v1.0.0"
+      }
+    ],
+    "latest": {
+      "version": "v1.1.0",
+      "repo": "https://github.com/MaxvandeLaar/homey-webos-plus#v1.1.0"
+    },
+    "avatar": "https://github.com/MaxvandeLaar/homey-webos-plus/blob/master/assets/images/small.png?raw=true"
+  },
+  {
+    "id": "com.roco.ancilla",
+    "name": "Ancilla",
+    "author": "Rocodamelshe",
+    "latest": {
+      "version": "alpha",
+      "repo": "https://github.com/Rocodamelshe/com.roco.ancilla#alpha"
+    },
+    "avatar": "https://github.com/Rocodamelshe/com.roco.ancilla/blob/alpha/assets/images/small.jpg?raw=true"
+  },
+  {
+    "id": "com.soundunited.heos",
+    "name": "D&M Heos",
+    "author": "Ramón Baas",
+    "latest": {
+      "version": "v1.0.0",
+      "repo": "https://github.com/nlrb/com.soundunited.heos#master"
+    },
+    "avatar": ""
+  },
+  {
+    "id": "io.homeassistant",
+    "name": "Home Assistant",
+    "author": "Rob Groenendijk",
+    "latest": {
+      "version": "v1.0.0",
+      "repo": "https://github.com/rogro82/io.homeassistant#master"
+    },
+    "avatar": ""
+  },
+  {
+    "id": "nuki.homey",
+    "name": "Nuki Smart Lock",
+    "author": "Jelger Haanstra",
+    "latest": {
+      "version": "v1.1.2",
+      "repo": "https://github.com/jghaanstra/nuki.homey#1.1.2"
+    },
+    "avatar": "https://github.com/jghaanstra/nuki.homey/blob/1.1.2/assets/images/small.png?raw=true"
+  }
+]
+

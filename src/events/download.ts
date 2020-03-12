@@ -1,31 +1,34 @@
-import {ipcMain, BrowserWindow, app} from 'electron';
-import {download} from 'electron-dl';
-import  {App} from 'homey';
-import {exec} from 'child_process';
+import {ipcMain, app} from 'electron';
+import {fetch, extract} from "gitly";
+import {existsSync} from "fs";
+import {dirname} from 'path'
+const AthomApp = require('homey/lib/App');
 
-const request = require('request');
-import {Open} from "unzipper";
+import {execute} from "../util/shell";
 
+ipcMain.on('install', async(event, {repo, homeyApp}) => {
+  const source = await fetch(repo, {
+    temp: `${app.getAppPath()}/tmp/`
+  }).catch((error) => event.reply('installation-failed', {error}));
 
-ipcMain.on('download-zip', async (event, args) => {
-  const directory = await Open.url(request, args.url);
-  event.reply('download-progress', 'downloaded');
-  const tmp = await directory.extract({path: `${app.getAppPath()}/tmp/`});
-  event.reply('download-progress', 'unzipped');
+  if (!source){
+    return
+  }
+  const repoDir = `${dirname(source)}/repo`;
+  const packageJson = `${repoDir}/package.json`;
 
-  exec( `${app.getAppPath()}/node_modules/.bin/homey app install`,
-  // exec( `pwd`,
-    {
-      cwd: `${app.getAppPath()}/tmp/webos-plus-v1.1.0/`
-    },
-    function (error, stdout, stderr) {
-      if (error) {
-        console.error(`exec error: ${error}`);
-        return;
-      }
-      console.log(`stdout: ${stdout}`);
-      console.log(`stderr: ${stderr}`);
-    });
+  await extract(source, repoDir);
 
-  event.reply('download-complete', 'done');
+  if (existsSync(packageJson)) {
+    const {stdout, stderr} = await execute(`${app.getAppPath()}/node_modules/npm/bin/npm-cli.js install --prod`, {cwd: repoDir}).catch(console.error);
+    if (stderr) {
+      console.error(stderr);
+      return event.reply('installation-failed', {error: stderr});
+    }
+    // console.log(`stdout: ${stdout}`);
+  }
+
+  const athomApp = new AthomApp(repoDir);
+  await athomApp.install();
+  event.reply('installation-finished', {app: homeyApp});
 });
