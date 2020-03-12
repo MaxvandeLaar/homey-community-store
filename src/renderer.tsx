@@ -32,7 +32,10 @@ import React, {useEffect, useState} from 'react';
 import * as ReactDOM from 'react-dom';
 import TopBar from "./components/TopBar";
 import Content from "./components/Content";
-import {Colors} from "./style/colors";
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faDownload } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faDownload);
 
 ReactDOM.render(<Container />, document.getElementById('root'));
 
@@ -40,14 +43,13 @@ function Container() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
   const [activeHomey, setActiveHomey] = useState(null);
+  const [searchValue, setSearchValue] = useState('');
 
   useEffect(() => {
     if (!loggedIn || !userProfile) {
       isAuthenticated();
     }
   }, [loggedIn, userProfile, activeHomey]);
-
-
 
 
   function isAuthenticated() {
@@ -71,6 +73,10 @@ function Container() {
     ipcRenderer.send('login-user');
   }
 
+  function changeSearchValue(value: string) {
+    setSearchValue(value);
+  }
+
   const styles = {
     container: {
       display: 'flex',
@@ -81,8 +87,8 @@ function Container() {
 
   return (
     <div style={styles.container}>
-      <TopBar loggedIn={loggedIn} loginFunc={loginUser} profile={userProfile} activeHomey={activeHomey}/>
-      <Content loggedIn={loggedIn} />
+      <TopBar loggedIn={loggedIn} searchValueChange={changeSearchValue} loginFunc={loginUser} profile={userProfile} activeHomey={activeHomey}/>
+      <Content loggedIn={loggedIn} searchValue={searchValue} />
     </div>
   );
 }

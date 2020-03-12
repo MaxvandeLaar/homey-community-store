@@ -3,9 +3,10 @@ import {Colors} from "../../style/colors";
 import './Button.scss';
 
 interface ButtonProps {
-  title: string;
-  onClick: () => void;
+  title?: string;
+  onClick?: () => void;
   style?: React.CSSProperties;
+  children?: any
 }
 
 const defaultStyle = {
@@ -18,7 +19,7 @@ const defaultStyle = {
   boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
   cursor: 'pointer'
 } as React.CSSProperties;
-function Button({title = '', style = {}, onClick}: ButtonProps) {
+function Button({title = '', style = {}, onClick, children}: ButtonProps) {
   const [theStyle, setTheStyle] = useState(defaultStyle);
   useEffect(() => {
 
@@ -33,7 +34,7 @@ function Button({title = '', style = {}, onClick}: ButtonProps) {
   // }
 
   return (
-    <button style={{...theStyle, ...style}} onClick={onClick}>{title}</button>
+    <button style={{...theStyle, ...style}} onClick={onClick}>{children}</button>
   )
 }
 

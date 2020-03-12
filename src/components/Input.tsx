@@ -4,6 +4,7 @@ interface InputProps {
   placeholder?: string;
   value?: string;
   style?: React.CSSProperties;
+  onChange?: (event: any) => void
 }
 
 const defaultStyle = {
@@ -16,9 +17,9 @@ const defaultStyle = {
   }
 } as React.CSSProperties;
 
-function Input({placeholder, value, style = {}}: InputProps) {
+function Input({placeholder, value, style = {}, onChange}: InputProps) {
   return (
-    <input style={{...defaultStyle, ...style}} placeholder={placeholder} value={value}/>
+    <input style={{...defaultStyle, ...style}} placeholder={placeholder} value={value} onChange={onChange}/>
   )
 }
 

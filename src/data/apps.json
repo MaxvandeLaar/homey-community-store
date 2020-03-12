@@ -1,59 +1,149 @@
-[
-  {
-    "id": "com.maxvandelaar.webos-plus",
-    "name": "WebOS Plus",
-    "author": "Max van de Laar",
-    "versions": [
-      {
-        "version": "v1.0.0",
-        "repo": "https://github.com/MaxvandeLaar/homey-webos-plus#v1.0.0"
-      }
-    ],
-    "latest": {
-      "version": "v1.1.0",
-      "repo": "https://github.com/MaxvandeLaar/homey-webos-plus#v1.1.0"
-    },
-    "avatar": "https://github.com/MaxvandeLaar/homey-webos-plus/blob/master/assets/images/small.png?raw=true"
+{
+  "com.maxvandelaar.webos-plus": {
+    "repo": "https://github.com/MaxvandeLaar/homey-webos-plus#v1.1.0"
   },
-  {
-    "id": "com.roco.ancilla",
-    "name": "Ancilla",
-    "author": "Rocodamelshe",
-    "latest": {
-      "version": "alpha",
-      "repo": "https://github.com/Rocodamelshe/com.roco.ancilla#alpha"
-    },
-    "avatar": "https://github.com/Rocodamelshe/com.roco.ancilla/blob/alpha/assets/images/small.jpg?raw=true"
+  "com.roco.ancilla": {
+    "repo": "https://github.com/Rocodamelshe/com.roco.ancilla#alpha"
   },
-  {
-    "id": "com.soundunited.heos",
-    "name": "D&M Heos",
-    "author": "Ramón Baas",
-    "latest": {
-      "version": "v1.0.0",
-      "repo": "https://github.com/nlrb/com.soundunited.heos#master"
-    },
-    "avatar": ""
+  "com.ikea.tradfri": {
+    "repo": "https://github.com/athombv/com.ikea.tradfri"
   },
-  {
-    "id": "io.homeassistant",
-    "name": "Home Assistant",
-    "author": "Rob Groenendijk",
-    "latest": {
-      "version": "v1.0.0",
-      "repo": "https://github.com/rogro82/io.homeassistant#master"
-    },
-    "avatar": ""
+  "com.aeotec": {
+    "repo": "https://github.com/athombv/com.aeotec"
   },
-  {
-    "id": "nuki.homey",
-    "name": "Nuki Smart Lock",
-    "author": "Jelger Haanstra",
-    "latest": {
-      "version": "v1.1.2",
-      "repo": "https://github.com/jghaanstra/nuki.homey#1.1.2"
-    },
-    "avatar": "https://github.com/jghaanstra/nuki.homey/blob/1.1.2/assets/images/small.png?raw=true"
+  "com.qubino": {
+    "repo": "https://github.com/athombv/com.qubino"
+  },
+  "com.devolo": {
+    "repo": "https://github.com/athombv/com.devolo"
+  },
+  "com.fibaro": {
+    "repo": "https://github.com/athombv/com.fibaro"
+  },
+  "com.ecobee": {
+    "repo": "https://github.com/athombv/com.ecobee"
+  },
+  "com.tado": {
+    "repo": "https://github.com/athombv/com.tado"
+  },
+  "nl.klikaanklikuit": {
+    "repo": "https://github.com/athombv/nl.klikaanklikuit"
+  },
+  "com.home-connect": {
+    "repo": "https://github.com/athombv/com.home-connect"
+  },
+  "com.plugwise.adam": {
+    "repo": "https://github.com/athombv/com.plugwise.adam"
+  },
+  "com.danfoss": {
+    "repo": "https://github.com/athombv/com.danfoss"
+  },
+  "com.eneco.toon": {
+    "repo": "https://github.com/athombv/nl.eneco.toon"
+  },
+  "com.samsung.ir": {
+    "repo": "https://github.com/athombv/com.samsung.ir"
+  },
+  "com.irobot.roomba980": {
+    "repo": "https://github.com/athombv/com.irobot.roomba980"
+  },
+  "com.iftt": {
+    "repo": "https://github.com/athombv/com.ifttt"
+  },
+  "com.osram.lightify.zigbee": {
+    "repo": "https://github.com/athombv/com.osram.lightify.zigbee"
+  },
+  "nl.philips.ir": {
+    "repo": "https://github.com/athombv/nl.philips.ir"
+  },
+  "nl.buienrader": {
+    "repo": "https://github.com/athombv/nl.buienradar"
+  },
+  "nl.klikaanklikuit.zigbee": {
+    "repo": "https://github.com/athombv/nl.klikaanklikuit.zigbee"
+  },
+  "com.danalock": {
+    "repo": "https://github.com/athombv/com.danalock"
+  },
+  "com.nest": {
+    "repo": "https://github.com/athombv/com.nest"
+  },
+  "com.milight": {
+    "repo": "https://github.com/athombv/com.milight"
+  },
+  "me.nanoleaf": {
+    "repo": "https://github.com/athombv/me.nanoleaf"
+  },
+  "com.denon.heos": {
+    "repo": "https://github.com/athombv/com.denon.heos"
+  },
+  "nl.alecto": {
+    "repo": "https://github.com/athombv/nl.alecto"
+  },
+  "com.athom.gallery": {
+    "repo": "https://github.com/athombv/com.athom.gallery"
+  },
+  "com.athom.homeyduino": {
+    "repo": "https://github.com/athombv/com.athom.homeyduino"
+  },
+  "io.nello": {
+    "repo": "https://github.com/athombv/io.nello"
+  },
+  "com.panasonic.ir": {
+    "repo": "https://github.com/athombv/com.panasonic.ir#rewrite-sdk2"
+  },
+  "com.lightwaverf.homey": {
+    "repo": "https://github.com/athombv/com.lightwaverf.homey"
+  },
+  "com.homematic": {
+    "repo": "https://github.com/athombv/com.homematic"
+  },
+  "com.athom.soundboard": {
+    "repo": "https://github.com/athombv/com.athom.soundboard"
+  },
+  "com.sony.ir": {
+    "repo": "https://github.com/athombv/com.sony.ir"
+  },
+  "nl.ziggo.horizon.ir": {
+    "repo": "https://github.com/athombv/nl.ziggo.horizon.ir"
+  },
+  "com.plugwise": {
+    "repo": "https://github.com/athombv/com.plugwise"
+  },
+  "com.greenwavesystems": {
+    "repo": "https://github.com/athombv/com.greenwavesystems"
+  },
+  "nl.postnl": {
+    "repo": "https://github.com/athombv/nl.postnl"
+  },
+  "com.wikipedia": {
+    "repo": "https://github.com/athombv/com.wikipedia"
+  },
+  "com.icndb": {
+    "repo": "https://github.com/athombv/com.icndb"
+  },
+  "com.slack": {
+    "repo": "https://github.com/athombv/com.slack"
+  },
+  "eu.elro": {
+    "repo": "https://github.com/athombv/eu.elro"
+  },
+  "org.upnp": {
+    "repo": "https://github.com/athombv/org.upnp"
+  },
+  "com.lg.ir": {
+    "repo": "https://github.com/athombv/com.lg.ir"
+  },
+  "com.wemo": {
+    "repo": "https://github.com/athombv/com.wemo"
+  },
+  "com.soundcloud": {
+    "repo": "https://github.com/athombv/com.soundcloud"
+  },
+  "com.heatmiser": {
+    "repo": "https://github.com/athombv/com.heatmiser"
+  },
+  "com.neatorobotics": {
+    "repo": "https://github.com/athombv/com.neatorobotics#beta"
   }
-]
-
+}
