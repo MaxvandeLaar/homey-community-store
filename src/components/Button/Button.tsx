@@ -6,7 +6,8 @@ interface ButtonProps {
   title?: string;
   onClick?: () => void;
   style?: React.CSSProperties;
-  children?: any
+  children?: any;
+  className?: string;
 }
 
 const defaultStyle = {
@@ -19,7 +20,7 @@ const defaultStyle = {
   boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
   cursor: 'pointer'
 } as React.CSSProperties;
-function Button({title = '', style = {}, onClick, children}: ButtonProps) {
+function Button({title = '', style = {}, onClick, children, className}: ButtonProps) {
   const [theStyle, setTheStyle] = useState(defaultStyle);
   useEffect(() => {
 
@@ -34,7 +35,7 @@ function Button({title = '', style = {}, onClick, children}: ButtonProps) {
   // }
 
   return (
-    <button style={{...theStyle, ...style}} onClick={onClick}>{children}</button>
+    <button style={{...theStyle, ...style}} onClick={onClick} className={className}>{children}</button>
   )
 }
 

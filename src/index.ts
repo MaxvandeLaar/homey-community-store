@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from 'electron';
+import {join} from 'path';
 declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -15,7 +16,7 @@ const createWindow = () => {
     minHeight: 400,
     webPreferences: {
       nodeIntegration: true
-    }
+    },
   });
 
   // and load the index.html of the app.

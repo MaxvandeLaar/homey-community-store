@@ -1,4 +1,4 @@
-import repos from '../data/apps.json';
+import repos from '../assets/apps.json';
 import axios from 'axios';
 import {ipcMain} from 'electron';
 import {AppInfo} from "../interfaces/App";
@@ -16,7 +16,7 @@ export async function getApps(): Promise<AppInfo[]> {
       const rawUrl = url.replace('#', '/raw/');
       const appJsonUrl = `${rawUrl}/app.json`;
       const response: any = await axios.get(appJsonUrl).catch(console.error);
-      if (!response || response.status !== 200){
+      if (!response || response.status !== 200) {
         console.error(response.statusText);
         return key;
       }
@@ -32,7 +32,7 @@ export async function getApps(): Promise<AppInfo[]> {
         }
       }
       const iconResponse: any = await axios.get(`${rawUrl}/assets/icon.svg`).catch(console.error);
-      if (!iconResponse || iconResponse.status !== 200){
+      if (!iconResponse || iconResponse.status !== 200) {
         console.error(iconResponse.statusText);
         // return key;
       } else {
@@ -45,7 +45,18 @@ export async function getApps(): Promise<AppInfo[]> {
       if (appInfo.images?.large) {
         appInfo.images.large = `${rawUrl}/${appInfo.images.large.substr(0, 1) === '.' ? appInfo.images.large.substr(1) : appInfo.images.large}`
       }
+      if (typeof appInfo.description !== 'object') {
+        appInfo.description = {en: appInfo.description};
+      }
       appInfo.repo = url;
+
+      if (!appInfo.category || appInfo.category.length === 0) {
+        appInfo.category = ['general'];
+      }
+      if (typeof appInfo.category === 'string') {
+        appInfo.category = [appInfo.category];
+      }
+
       appList.push(appInfo);
     }
     return key;
@@ -63,5 +74,14 @@ export async function getApps(): Promise<AppInfo[]> {
 
 ipcMain.on('retrieve-apps', async (event, args) => {
   const apps = await getApps();
-  event.reply('retrieve-apps-finished', {apps});
+  const categories: string[] = [];
+  apps.forEach(app => {
+    app.category.forEach(cat => {
+      if (!categories.includes(cat.toLowerCase())){
+        categories.push(cat.toLowerCase());
+      }
+    });
+  });
+  categories.sort();
+  event.reply('retrieve-apps-finished', {apps, categories});
 });

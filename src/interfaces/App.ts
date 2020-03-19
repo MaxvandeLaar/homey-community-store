@@ -11,7 +11,7 @@ export interface AppInfo {
   brandColor?: string;
   description: {
     en: string;
-  };
+  } | string;
   tags: {
     en: string[];
   };
@@ -34,5 +34,10 @@ export interface AppInfo {
     triggers: {}[];
     condition: {}[];
     actions: {}[];
-  }
+  },
+  progress?: {
+    step?: number;
+    totalSteps?: number;
+    message?: string;
+  };
 }

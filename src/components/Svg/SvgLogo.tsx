@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import {Colors} from "../../style/colors";
+import './SvgLogo.scss';
 
-function SvgLogo({svg, backgroundColor = Colors.primary}: { backgroundColor: string; svg: string; }) {
+function SvgLogo({className, svg, backgroundColor = Colors.primary, onClick}: { className?: string; onClick?: () => void; backgroundColor: string; svg: string; }) {
   const [mask, setMask] = useState(null);
   useEffect(() => {
     const str = 'data:image/svg+xml;charset=utf-8;base64,' + new Buffer(svg).toString('base64');
@@ -10,26 +11,16 @@ function SvgLogo({svg, backgroundColor = Colors.primary}: { backgroundColor: str
 
   return (
     <div style={{
-      width: '50px',
-      height: '50px',
-      borderRadius: '100%',
-      padding: '1em',
       backgroundColor
-    }}>
+    }}
+         onClick={onClick}
+         className={`icon-container ${className || ''}`}
+    >
       {mask && (
         <div
-          data-mask={mask}
-             style={{
-               width: '100%',
-               height: '100%',
-               backgroundColor: 'white',
-               WebkitMaskImage: `url(${mask})`,
-               WebkitMaskPosition: 'center center',
-               display: 'block',
-               WebkitMaskSize: 'contain',
-               WebkitMaskRepeat: 'no-repeat'
-             } as React.CSSProperties}
-          // dangerouslySetInnerHTML={{__html: svg}}
+          style={{
+            WebkitMaskImage: `url(${mask})`,
+          } as React.CSSProperties}
         />
       )}
 

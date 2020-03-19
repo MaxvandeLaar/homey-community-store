@@ -1,6 +1,25 @@
-.svg-container {
-  svg {
-    width: 50px !important;
-    height: 50px !important;
+//.svg-container {
+//  svg {
+//    width: $icon-size !important;
+//    height: $icon-size !important;
+//  }
+//}
+$icon-size: 40px;
+$icon-padding: 5px;
+
+.icon-container {
+  width: $icon-size;
+  height: $icon-size;
+  border-radius: 100%;
+  padding: $icon-padding;
+
+  div {
+    -webkit-mask-position: center center;
+    display: block;
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    background-color: #fff;
+    width: calc( #{$icon-size} - #{$icon-padding} * 2);
+    height: calc( #{$icon-size} - #{$icon-padding} * 2);
   }
 }
