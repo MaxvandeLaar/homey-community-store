@@ -1,6 +1,6 @@
 {
   "com.maxvandelaar.webos-plus": {
-    "repo": "https://github.com/MaxvandeLaar/homey-webos-plus#v1.1.0"
+    "repo": "https://github.com/MaxvandeLaar/homey-webos-plus"
   },
   "com.roco.ancilla": {
     "repo": "https://github.com/Rocodamelshe/com.roco.ancilla#alpha"
