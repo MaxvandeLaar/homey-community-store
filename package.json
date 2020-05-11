@@ -12,10 +12,11 @@
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "make:windows": "electron-forge make platform=win32 arch=x64",
+    "make:windows": "electron-forge make --platform=win32 --arch=x64",
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts .",
-    "build": "cd out/Homey\\ Community\\ Store-darwin-x64/Homey\\ Community\\ Store.app/Contents/Resources/app && npm i homey npm"
+    "build": "cd out/Homey\\ Community\\ Store-darwin-x64/Homey\\ Community\\ Store.app/Contents/Resources/app && npm i homey npm",
+    "build:windows": "cd out/Homey\\ Community\\ Store-win32-x64/resources/app && npm i homey npm"
   },
   "keywords": [],
   "author": {
@@ -51,7 +52,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "free_homey"
+            "name": "homey-community-store"
           }
         },
         {
@@ -148,7 +149,6 @@
     "react-bootstrap": "^1.0.0-beta.17",
     "react-dom": "^16.13.0",
     "shelljs": "^0.8.3",
-    "styled-components": "^5.0.1",
-    "update-electron-app": "^1.5.0"
+    "styled-components": "^5.0.1"
   }
 }
