@@ -27,7 +27,7 @@
  */
 
 import './index.css';
-import {ipcRenderer} from 'electron';
+import {ipcRenderer, shell} from 'electron';
 import React, {useEffect, useState} from 'react';
 import * as ReactDOM from 'react-dom';
 import TopBar from "./components/TopBar/TopBar";
@@ -37,7 +37,17 @@ import {faAsterisk, faDownload, faSignInAlt, faSpinner} from '@fortawesome/free-
 import './style/style.scss';
 import {Container, Row, Col} from 'react-bootstrap';
 
-library.add(faDownload, faSignInAlt, faSpinner,faAsterisk);
+library.add(faDownload, faSignInAlt, faSpinner, faAsterisk);
+
+ipcRenderer.once('check-for-update-completed', (event, data) => {
+  console.log('VERSION CHECK RESPONSE', data);
+
+  const result = confirm('Update for the community store is available! Please download the update from github!');
+  if (result === true) {
+    shell.openExternal('https://github.com/MaxvandeLaar/homey-community-store/releases');
+  }
+});
+ipcRenderer.send('check-for-update');
 
 ReactDOM.render(<AppContainer />, document.getElementById('root'));
 
@@ -48,6 +58,8 @@ function AppContainer() {
   const [searchValue, setSearchValue] = useState('');
 
   useEffect(() => {
+
+
     if (Notification.permission !== "denied") {
       Notification.requestPermission().then(function (permission) {
 
@@ -87,10 +99,10 @@ function AppContainer() {
 
   return (
     <>
-        <TopBar loggedIn={loggedIn} searchValueChange={changeSearchValue} loginFunc={loginUser}
-                profile={userProfile}
-                activeHomey={activeHomey}
-        />
+      <TopBar loggedIn={loggedIn} searchValueChange={changeSearchValue} loginFunc={loginUser}
+              profile={userProfile}
+              activeHomey={activeHomey}
+      />
       <Container className={'mt-5'}>
         <Content loggedIn={loggedIn} searchValue={searchValue} />
       </Container>

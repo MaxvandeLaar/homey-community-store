@@ -5,145 +5,64 @@
   "com.roco.ancilla": {
     "repo": "https://github.com/Rocodamelshe/com.roco.ancilla#alpha"
   },
-  "com.ikea.tradfri": {
-    "repo": "https://github.com/athombv/com.ikea.tradfri"
+  "com.svipler.athom.sonos-say": {
+    "repo": "https://github.com/ludvigaldrin/com.svipler.athom.sonos-say"
   },
-  "com.aeotec": {
-    "repo": "https://github.com/athombv/com.aeotec"
+  "com.neo": {
+    "repo": "https://github.com/mruiter/com.neo"
   },
-  "com.qubino": {
-    "repo": "https://github.com/athombv/com.qubino"
+  "com.soundunited.heos": {
+    "repo": "https://github.com/nlrb/com.soundunited.heos"
   },
-  "com.devolo": {
-    "repo": "https://github.com/athombv/com.devolo"
+  "io.homeassistant": {
+    "repo": "https://github.com/rogro82/io.homeassistant"
   },
-  "com.fibaro": {
-    "repo": "https://github.com/athombv/com.fibaro"
+  "ru.notabene.deconz": {
+    "repo": "https://github.com/fantomnotabene/HomeyCONZ"
   },
-  "com.ecobee": {
-    "repo": "https://github.com/athombv/com.ecobee"
+  "nuki.homey": {
+    "repo": "https://github.com/jghaanstra/nuki.homey"
   },
-  "com.tado": {
-    "repo": "https://github.com/athombv/com.tado"
+  "com.roco.pipup": {
+    "repo": "https://github.com/Rocodamelshe/com.roco.pipup"
   },
-  "nl.klikaanklikuit": {
-    "repo": "https://github.com/athombv/nl.klikaanklikuit"
+  "com.roco.slideshow": {
+    "repo": "https://github.com/Rocodamelshe/com.roco.slideshow"
   },
-  "com.home-connect": {
-    "repo": "https://github.com/athombv/com.home-connect"
+  "com.lightwaverf.smartseries": {
+    "repo": "https://github.com/AdyRock/com.lightwaverf.smartseries"
   },
-  "com.plugwise.adam": {
-    "repo": "https://github.com/athombv/com.plugwise.adam"
+  "com.weatherunderground": {
+    "repo": "https://github.com/AdyRock/com.weatherunderground"
   },
-  "com.danfoss": {
-    "repo": "https://github.com/athombv/com.danfoss"
+  "com.soma.connect": {
+    "repo": "https://github.com/AdyRock/com.soma.connect"
   },
-  "com.eneco.toon": {
-    "repo": "https://github.com/athombv/nl.eneco.toon"
+  "com.onvif": {
+    "repo": "https://github.com/AdyRock/com.onvif"
   },
-  "com.samsung.ir": {
-    "repo": "https://github.com/athombv/com.samsung.ir"
+  "com.uc.heimdall": {
+    "repo": "https://github.com/daneedk/com.uc.heimdall"
   },
-  "com.irobot.roomba980": {
-    "repo": "https://github.com/athombv/com.irobot.roomba980"
+  "nl.nefit.easy": {
+    "repo": "https://github.com/robertklep/nl.nefit.easy/"
   },
-  "com.iftt": {
-    "repo": "https://github.com/athombv/com.ifttt"
+  "name.klep.transitions": {
+    "repo": "https://github.com/robertklep/name.klep.transitions/"
   },
-  "com.osram.lightify.zigbee": {
-    "repo": "https://github.com/athombv/com.osram.lightify.zigbee"
+  "name.klep.flow-event-bus": {
+    "repo": "https://github.com/robertklep/name.klep.flow-event-bus/"
   },
-  "nl.philips.ir": {
-    "repo": "https://github.com/athombv/nl.philips.ir"
+  "name.klep.sonoff": {
+    "repo": "https://github.com/robertklep/name.klep.sonoff/"
   },
-  "nl.buienrader": {
-    "repo": "https://github.com/athombv/nl.buienradar"
+  "com.swttt.homekit": {
+    "repo": "https://github.com/swttt/com.swttt.homekit/"
   },
-  "nl.klikaanklikuit.zigbee": {
-    "repo": "https://github.com/athombv/nl.klikaanklikuit.zigbee"
+  "org.telegram.api.bot": {
+    "repo": "https://github.com/jordenc/org.telegram.api.bot"
   },
-  "com.danalock": {
-    "repo": "https://github.com/athombv/com.danalock"
-  },
-  "com.nest": {
-    "repo": "https://github.com/athombv/com.nest"
-  },
-  "com.milight": {
-    "repo": "https://github.com/athombv/com.milight"
-  },
-  "me.nanoleaf": {
-    "repo": "https://github.com/athombv/me.nanoleaf"
-  },
-  "com.denon.heos": {
-    "repo": "https://github.com/athombv/com.denon.heos"
-  },
-  "nl.alecto": {
-    "repo": "https://github.com/athombv/nl.alecto"
-  },
-  "com.athom.gallery": {
-    "repo": "https://github.com/athombv/com.athom.gallery"
-  },
-  "com.athom.homeyduino": {
-    "repo": "https://github.com/athombv/com.athom.homeyduino"
-  },
-  "io.nello": {
-    "repo": "https://github.com/athombv/io.nello"
-  },
-  "com.panasonic.ir": {
-    "repo": "https://github.com/athombv/com.panasonic.ir#rewrite-sdk2"
-  },
-  "com.lightwaverf.homey": {
-    "repo": "https://github.com/athombv/com.lightwaverf.homey"
-  },
-  "com.homematic": {
-    "repo": "https://github.com/athombv/com.homematic"
-  },
-  "com.athom.soundboard": {
-    "repo": "https://github.com/athombv/com.athom.soundboard"
-  },
-  "com.sony.ir": {
-    "repo": "https://github.com/athombv/com.sony.ir"
-  },
-  "nl.ziggo.horizon.ir": {
-    "repo": "https://github.com/athombv/nl.ziggo.horizon.ir"
-  },
-  "com.plugwise": {
-    "repo": "https://github.com/athombv/com.plugwise"
-  },
-  "com.greenwavesystems": {
-    "repo": "https://github.com/athombv/com.greenwavesystems"
-  },
-  "nl.postnl": {
-    "repo": "https://github.com/athombv/nl.postnl"
-  },
-  "com.wikipedia": {
-    "repo": "https://github.com/athombv/com.wikipedia"
-  },
-  "com.icndb": {
-    "repo": "https://github.com/athombv/com.icndb"
-  },
-  "com.slack": {
-    "repo": "https://github.com/athombv/com.slack"
-  },
-  "eu.elro": {
-    "repo": "https://github.com/athombv/eu.elro"
-  },
-  "org.upnp": {
-    "repo": "https://github.com/athombv/org.upnp"
-  },
-  "com.lg.ir": {
-    "repo": "https://github.com/athombv/com.lg.ir"
-  },
-  "com.wemo": {
-    "repo": "https://github.com/athombv/com.wemo"
-  },
-  "com.soundcloud": {
-    "repo": "https://github.com/athombv/com.soundcloud"
-  },
-  "com.heatmiser": {
-    "repo": "https://github.com/athombv/com.heatmiser"
-  },
-  "com.neatorobotics": {
-    "repo": "https://github.com/athombv/com.neatorobotics#beta"
+  "image.grabber": {
+    "repo": "https://github.com/jordenc/image.grabber"
   }
 }

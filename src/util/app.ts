@@ -15,9 +15,9 @@ export async function getApps(): Promise<AppInfo[]> {
       }
       const rawUrl = url.replace('#', '/raw/');
       const appJsonUrl = `${rawUrl}/app.json`;
-      const response: any = await axios.get(appJsonUrl).catch(console.error);
+      const response: any = await axios.get(appJsonUrl).catch(() => {return key});
       if (!response || response.status !== 200) {
-        console.error(response.statusText);
+        // console.error(response ? response.statusText : response);
         return key;
       }
       let appInfo: AppInfo = response.data;
@@ -33,8 +33,8 @@ export async function getApps(): Promise<AppInfo[]> {
       }
       const iconResponse: any = await axios.get(`${rawUrl}/assets/icon.svg`).catch(console.error);
       if (!iconResponse || iconResponse.status !== 200) {
-        console.error(iconResponse.statusText);
-        // return key;
+        // console.error(iconResponse ? iconResponse.statusText : iconResponse);
+        return key;
       } else {
         appInfo.icon = iconResponse.data;
       }

@@ -21,7 +21,7 @@ function AppModal({onClose, app}: { onClose?: () => void; app: AppInfo }) {
               Close
             </Button>
             <Button variant="primary" onClick={onClose}>
-              Save Changes
+              Install
             </Button>
           </Modal.Footer>
         </>
