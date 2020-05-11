@@ -167,11 +167,11 @@ function App({onClickApp, onInstall, app}: { onClickApp: (app: AppInfo) => void;
         try {
           error = JSON.parse(args.error);
         } catch (e) {
-          console.error(e);
+          // console.error(e);
         }
         alert({
           title: app.name.en,
-          text: error,
+          text: JSON.stringify(error),
           type: 'error'
         });
       } else {
