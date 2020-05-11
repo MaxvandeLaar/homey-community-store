@@ -163,9 +163,15 @@ function App({onClickApp, onInstall, app}: { onClickApp: (app: AppInfo) => void;
     ipcRenderer.on(`installation-finished-${app.id}`, (event, args) => {
       setIsInstalling(false);
       if (args.error) {
+        let error = args.error;
+        try {
+          error = JSON.parse(args.error);
+        } catch (e) {
+          console.error(e);
+        }
         alert({
           title: app.name.en,
-          text: JSON.parse(args.error) || args.error,
+          text: error,
           type: 'error'
         });
       } else {
