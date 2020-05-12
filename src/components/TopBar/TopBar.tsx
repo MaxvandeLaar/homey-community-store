@@ -1,29 +1,31 @@
 import React, {useEffect} from "react";
-// import Image from "../Image";
 import {Profile} from "../../interfaces/Profile";
-// import Button from "../Button/Button";
-
-
 import Logo from './Logo';
-import Input from "../Input";
 import './TopBar.scss';
-import {Form, Nav, Navbar, FormControl, Button, Image, Dropdown, NavDropdown} from "react-bootstrap";
+import {Nav, Navbar, FormControl, Button, Image, NavDropdown} from "react-bootstrap";
 import {Homey} from "../../interfaces/Homey";
+import {ipcRenderer} from 'electron';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 interface TopBarProps {
   profile: Profile | null;
   loggedIn: boolean;
+  waitingForAuth: boolean;
   loginFunc: () => void;
+  logoutFunc: () => void;
   activeHomey: { id: string; name: string } | null;
+  setActiveHomeyFunc: (homey: Homey) => void;
   searchValueChange?: (value: string) => void;
 }
 
 function TopBar({
                   profile,
                   loggedIn = false,
+                  waitingForAuth = false,
                   loginFunc,
+                  logoutFunc,
                   activeHomey,
+                  setActiveHomeyFunc,
                   searchValueChange
                 }: TopBarProps) {
 
@@ -36,7 +38,12 @@ function TopBar({
   }
 
   function setActiveHomey(homey: Homey) {
-    //call to set active homey
+    console.log('CLICK HOMEY', homey);
+    setActiveHomeyFunc(homey);
+  }
+
+  function logout() {
+    logoutFunc();
   }
 
   return (
@@ -52,12 +59,15 @@ function TopBar({
             {profile?.homeys.map((homey: Homey) => (
               <NavDropdown.Item key={homey.id} onClick={() => setActiveHomey(homey)}>{homey.name}</NavDropdown.Item>
             ))}
+            <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
           </NavDropdown>
           <Image width={'40px'} height={'40px'} src={profile?.avatar.small} roundedCircle />
         </Nav>
-      ): (
+      ) : (
         <Nav className={'ml-3'}>
-          <Button onClick={login} className={'login-btn'}>Sign in <FontAwesomeIcon icon={'sign-in-alt'} /> Athom</Button>
+          <Button onClick={login} className={'login-btn'}>
+            Sign in <FontAwesomeIcon
+            icon={waitingForAuth ? 'spinner' : 'sign-in-alt'} spin={waitingForAuth} /> Athom</Button>
         </Nav>
       )}
     </Navbar>

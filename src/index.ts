@@ -3,6 +3,8 @@ import {join} from 'path';
 declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
 import {version} from '../package.json';
 import axios from 'axios';
+const log = require('electron-log');
+const cmp = require('semver-compare');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -24,26 +26,24 @@ const createWindow = () => {
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
+  if (process.env.NODE_ENV === 'development') {
+    // Open the DevTools.
+    mainWindow.webContents.openDevTools();
+  }
 };
 
-async function checkForUpdate(){
-
-}
 
 ipcMain.on('check-for-update', async (event, args) => {
-  console.log("CHECK FOR UPDATAE!");
-  const response = await axios.get('https://raw.githubusercontent.com/MaxvandeLaar/homey-community-store/master/package.json').catch(console.error);
-  console.log('APP VERSION LOCAL', version);
+  const response = await axios.get('https://api.github.com/repos/MaxvandeLaar/homey-community-store/releases/latest').catch(console.error);
   if (!response || response.status !== 200) {
     return;
   }
   const remotePackage = response.data;
-  if (version !== remotePackage.version) {
+  const remoteVersion = remotePackage.tag_name.replace(/v/gi, '');
+  if (cmp(remoteVersion, version) === 1) { //Compare semver version to detect if update is available
     event.reply('check-for-update-completed', true);
   } else {
-    console.log('Running latest version');
+    log.info('Running latest version');
   }
 });
 

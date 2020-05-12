@@ -1,6 +1,7 @@
 import repos from '../assets/apps.json';
 import axios from 'axios';
 import {ipcMain} from 'electron';
+const log = require('electron-log');
 import {AppInfo} from "../interfaces/App";
 
 export async function getApps(): Promise<AppInfo[]> {
@@ -26,8 +27,7 @@ export async function getApps(): Promise<AppInfo[]> {
         try {
           appInfo = JSON.parse(response.data);
         } catch (e) {
-          console.log(url);
-          console.error(e);
+          log.error(e);
           return key;
         }
       }
@@ -41,9 +41,17 @@ export async function getApps(): Promise<AppInfo[]> {
 
       if (appInfo.images?.small) {
         appInfo.images.small = `${rawUrl}/${appInfo.images.small.substr(0, 1) === '.' ? appInfo.images.small.substr(1) : appInfo.images.small}`
+        const smallImageResponse = await axios.head(appInfo.images.small).catch((e) => {});
+        if (!smallImageResponse || smallImageResponse.status !== 200) {
+          appInfo.images.small = null;
+        }
       }
       if (appInfo.images?.large) {
         appInfo.images.large = `${rawUrl}/${appInfo.images.large.substr(0, 1) === '.' ? appInfo.images.large.substr(1) : appInfo.images.large}`
+        const largeImageResponse = await axios.head(appInfo.images.large).catch((e) => {});
+        if (!largeImageResponse || largeImageResponse.status !== 200) {
+          appInfo.images.large = null;
+        }
       }
       if (typeof appInfo.description !== 'object') {
         appInfo.description = {en: appInfo.description};
@@ -55,6 +63,18 @@ export async function getApps(): Promise<AppInfo[]> {
       }
       if (typeof appInfo.category === 'string') {
         appInfo.category = [appInfo.category];
+      }
+
+      const readMeResponse = await axios.get(`${rawUrl}/README.md`).catch(e => {});
+      if (readMeResponse && readMeResponse.status === 200) {
+        appInfo.readMe = readMeResponse.data;
+      }
+
+      if (appInfo.drivers) {
+        appInfo.drivers.forEach((driver) => {
+          driver.images.small = `${rawUrl}/${driver.images.small.substr(0, 1) === '.' ? driver.images.small.substr(1) : driver.images.small}`
+          driver.images.large = `${rawUrl}/${driver.images.large.substr(0, 1) === '.' ? driver.images.large.substr(1) : driver.images.large}`
+        });
       }
 
       appList.push(appInfo);

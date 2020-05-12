@@ -1,9 +1,10 @@
 import React from 'react';
+import './Logo.scss'
 
-export default function Logo({width, height} : {width: string; height: string}) {
+export default function Logo({width, height, classes} : {classes?: string; width: string; height: string}) {
   return (
-    <svg width={width} height={height} viewBox="0 0 126 125" version="1.1">
-      <title>Community Store Logo Copy</title>
+    <svg width={width} height={height} viewBox="0 0 126 125" version="1.1" className={classes || ''}>
+      <title>Community Store Logo</title>
       <desc>Created with Sketch.</desc>
       <defs>
         <linearGradient x1="98.8650343%" y1="58.2945338%" x2="5.20957203%" y2="60.824743%" id="linearGradient-1">

@@ -31,3 +31,25 @@
 //  padding: 2em 5em;
 //  box-shadow: 0 2px 44px 0 rgba(45,45,45,.07), 0 2px 4px 0 rgba(45,45,45,.04);
 //}
+
+.modal-header {
+  border:none !important;
+}
+
+.modal-footer {
+  border: none !important;
+}
+
+.modal-body {
+  .image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 3px;
+    margin-bottom: 1rem;
+  }
+
+  .tab-content {
+    margin-top: 2rem;
+  }
+}

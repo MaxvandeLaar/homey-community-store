@@ -1,10 +1,15 @@
 import {ipcMain} from 'electron';
+
 const AthomApi = require('homey').AthomApi;
 const AthomSettings = require('homey').Settings;
 
 ipcMain.on('login-user', async (event, args) => {
   AthomApi._api = null;
-  await AthomApi._initApi();
+  try {
+    await AthomApi._initApi();
+  } catch (e) {
+    event.reply('error', {title: e.name, message: e.message});
+  }
   event.reply('user-logged-in');
 
   // console.log(await AthomApi.getProfile());
@@ -17,8 +22,17 @@ ipcMain.on('login-user', async (event, args) => {
   // }
 });
 
+ipcMain.on('logout-user', (event, args) => {
+  AthomApi._api.logout();
+  AthomApi._api = null;
+  AthomApi.logout();
+  AthomApi._activeHomey = null;
+  AthomSettings.set('activeHomey', null);
+  event.reply('user-logged-out');
+});
+
 ipcMain.on('is-user-authenticated', async (event, args) => {
-  if (!AthomApi._api){
+  if (!AthomApi._api) {
     AthomApi._createApi();
   }
   const loggedIn = await AthomApi._api.isLoggedIn();
@@ -33,7 +47,19 @@ ipcMain.on('is-user-authenticated', async (event, args) => {
   event.reply('user-authenticated', {loggedIn, profile, activeHomey});
 });
 
+ipcMain.on('set-active-homey', async (event, args) => {
+  const homey = args.homey;
+  try {
+    await AthomApi.setActiveHomey(homey);
+    const activeHomey = AthomApi._activeHomey || await AthomSettings.get('activeHomey');
+    event.reply('active-homey-set', {homey: activeHomey});
+  } catch (e) {
+    console.error(e);
+    event.reply('error', {title: e.name, message: e.message});
+  }
+});
+
 async function getProfile() {
-  AthomApi._api = null;
+  // AthomApi._api = null;
   return await AthomApi.getProfile();
 }

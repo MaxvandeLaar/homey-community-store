@@ -35,13 +35,30 @@ import Content from "./components/Content/Content";
 import {library} from '@fortawesome/fontawesome-svg-core'
 import {faAsterisk, faDownload, faSignInAlt, faSpinner} from '@fortawesome/free-solid-svg-icons'
 import './style/style.scss';
+import {version, author} from '../package.json';
 import {Container, Row, Col} from 'react-bootstrap';
+// @ts-ignore
+import {alert, defaultModules, defaults, Stack} from '@pnotify/core';
+// @ts-ignore
+import * as PNotifyDesktop from '@pnotify/desktop/dist/PNotifyDesktop';
+import {Homey} from './interfaces/Homey';
+
+const myStack = new Stack({
+  dir1: 'up',
+  dir2: 'left',
+  firstpos1: 25,
+  firstpos2: 25,
+  push: 'top',
+  maxStrategy: 'close',
+  maxOpen: 1,
+  modal: 'ish',
+  context: document.getElementById('root')
+});
+defaults.stack = myStack;
 
 library.add(faDownload, faSignInAlt, faSpinner, faAsterisk);
 
 ipcRenderer.once('check-for-update-completed', (event, data) => {
-  console.log('VERSION CHECK RESPONSE', data);
-
   const result = confirm('Update for the community store is available! Please download the update from github!');
   if (result === true) {
     shell.openExternal('https://github.com/MaxvandeLaar/homey-community-store/releases');
@@ -56,10 +73,17 @@ function AppContainer() {
   const [userProfile, setUserProfile] = useState(null);
   const [activeHomey, setActiveHomey] = useState(null);
   const [searchValue, setSearchValue] = useState('');
+  const [waitingForAuth, setWaitingForAuth] = useState(false);
+
+  ipcRenderer.on('error', (event, args) => {
+    alert({
+      title: args.title,
+      text: args.message,
+      type: 'error'
+    });
+  });
 
   useEffect(() => {
-
-
     if (Notification.permission !== "denied") {
       Notification.requestPermission().then(function (permission) {
 
@@ -87,14 +111,30 @@ function AppContainer() {
   }
 
   function loginUser() {
+    setWaitingForAuth(true);
     ipcRenderer.once('user-logged-in', (event, args) => {
+      setWaitingForAuth(false);
       isAuthenticated();
     });
     ipcRenderer.send('login-user');
   }
 
+  function logoutUser() {
+    ipcRenderer.once('user-logged-out', (event, args) => {
+      isAuthenticated();
+    });
+    ipcRenderer.send('logout-user');
+  }
+
   function changeSearchValue(value: string) {
     setSearchValue(value);
+  }
+
+  function setActiveHomeyFunc(homey: Homey) {
+    ipcRenderer.once('active-homey-set', (event, args) => {
+      setActiveHomey(args.homey);
+    });
+    ipcRenderer.send('set-active-homey', {homey});
   }
 
   return (
@@ -102,11 +142,20 @@ function AppContainer() {
       <TopBar loggedIn={loggedIn} searchValueChange={changeSearchValue} loginFunc={loginUser}
               profile={userProfile}
               activeHomey={activeHomey}
+              logoutFunc={logoutUser}
+              waitingForAuth={waitingForAuth}
+              setActiveHomeyFunc={setActiveHomeyFunc}
       />
       <Container className={'mt-5'}>
         <Content loggedIn={loggedIn} searchValue={searchValue} />
       </Container>
+      <Container>
+        <Row>
+          <Col className={'text-center small'}>
+            <span>Version {version}<br />Created by <a href={'#'} onClick={() => shell.openExternal('https://github.com/MaxvandeLaar')}>{author.name}</a></span>
+          </Col>
+        </Row>
+      </Container>
     </>
-
   );
 }

@@ -12,6 +12,7 @@ import Fuse from "fuse.js";
 import {alert, defaultModules, defaults, Stack} from '@pnotify/core';
 // @ts-ignore
 import * as PNotifyDesktop from '@pnotify/desktop/dist/PNotifyDesktop';
+import Logo from "../TopBar/Logo";
 
 const myStack = new Stack({
   dir1: 'up',
@@ -28,6 +29,7 @@ defaults.stack = myStack;
 
 export default function Content({loggedIn = false, searchValue = ''}) {
   const [apps, setApps] = useState(null);
+  const [loadingApps, setLoadingApps] = useState(false);
   const [startApps, setStartApps] = useState(null);
   const [selectedApp, setSelectedApp] = useState(null);
   const [fuse, setFuse] = useState(null);
@@ -55,6 +57,7 @@ export default function Content({loggedIn = false, searchValue = ''}) {
         setApps(args.apps);
         setStartApps(args.apps);
         setCategories(args.categories);
+        setLoadingApps(false);
 
         const options = {
           keys: ['id', 'name.en', 'description.en', 'author.name', 'tags.en'],
@@ -63,6 +66,7 @@ export default function Content({loggedIn = false, searchValue = ''}) {
         setFuse(new Fuse(args.apps, options));
       });
       ipcRenderer.send('retrieve-apps');
+      setLoadingApps(true);
     }
 
     ipcRenderer.on('installation-progress', (event, args) => {
@@ -110,27 +114,24 @@ export default function Content({loggedIn = false, searchValue = ''}) {
   return (
     <>
       <Row>
-        {categories?.length && categories.map((category: string, index: number) =>
+        {
+          loadingApps &&
+          <Col className={'text-center'}>
+            <Logo width={'200px'} height={'200px'} classes={'spinner'}/>
+          </Col>
+        }
+        {!loadingApps && categories?.length && categories.map((category: string, index: number) =>
           <List installList={installList} onInstall={install} category={category} apps={apps?.length ? apps : []}
-                key={index} onClickApp={setSelectedApp} />
+                key={index} onClickApp={setSelectedApp} loggedIn={loggedIn} />
         )}
       </Row>
-      <AppModal app={selectedApp} onClose={closeModal} />
+      <AppModal app={selectedApp} onClose={closeModal} onInstall={install} />
     </>
   )
 }
 
-function List({installList, onInstall, category, apps, onClickApp}: { installList: AppInfo[]; onInstall: (app: AppInfo) => void; onClickApp: (app: AppInfo) => void; category: string; apps: AppInfo[] }) {
+function List({installList, onInstall, category, apps, onClickApp, loggedIn}: { installList: AppInfo[]; onInstall: (app: AppInfo) => void; onClickApp: (app: AppInfo) => void; category: string; apps: AppInfo[]; loggedIn: boolean }) {
   const appList = apps.filter(app => app.category?.includes(category));
-
-  function install(app: AppInfo) {
-    onInstall(app);
-    // ipcRenderer.send('install', {repo: app.repo, homeyApp: app});
-  }
-
-  function isInstalling(app: AppInfo) {
-    return localStorage.getItem(app.id) && localStorage.getItem(app.id) === 'true';
-  }
 
   return (
     <>
@@ -142,7 +143,7 @@ function List({installList, onInstall, category, apps, onClickApp}: { installLis
                 <Card.Title>{category.substr(0, 1).toUpperCase()}{category.substr(1)}</Card.Title>
                 <ListGroup variant="flush">
                   {appList.map((app) => (
-                    <App key={app.id} app={app} onClickApp={onClickApp} onInstall={onInstall} />
+                    <App key={app.id} app={app} onClickApp={onClickApp} onInstall={onInstall} loggedIn={loggedIn} />
                   ))}
                 </ListGroup>
               </Card.Body>
@@ -154,7 +155,7 @@ function List({installList, onInstall, category, apps, onClickApp}: { installLis
   );
 }
 
-function App({onClickApp, onInstall, app}: { onClickApp: (app: AppInfo) => void; onInstall: (app: AppInfo) => void; app: AppInfo }) {
+function App({onClickApp, onInstall, app, loggedIn}: { onClickApp: (app: AppInfo) => void; onInstall: (app: AppInfo) => void; app: AppInfo; loggedIn: boolean }) {
   const [isInstalling, setIsInstalling] = useState(false);
 
   useEffect(() => {
@@ -175,6 +176,11 @@ function App({onClickApp, onInstall, app}: { onClickApp: (app: AppInfo) => void;
           type: 'error'
         });
       } else {
+        alert({
+          title: app.name.en,
+          text: `Thank you for choosing ${app.name.en}. The app is installed!`,
+          type: 'success'
+        });
         alert({
           title: app.name.en,
           text: `Thank you for choosing ${app.name.en}. The app is installed!`,
@@ -218,8 +224,8 @@ function App({onClickApp, onInstall, app}: { onClickApp: (app: AppInfo) => void;
       <Button className={`install-button ml-auto ${isInstalling ? ' installing' : ''}`}
               onClick={install}
               variant={isInstalling ? 'outline-secondary' : 'outline-success'}
-              disabled={isInstalling}>
-        <FontAwesomeIcon icon={isInstalling ? 'asterisk' : 'download'} spin={isInstalling} />
+              disabled={isInstalling || !loggedIn}>
+        {loggedIn && <FontAwesomeIcon icon={isInstalling ? 'asterisk' : 'download'} spin={isInstalling} />}
         <span>v{app.version}</span>
       </Button>
       <span>{app.progress?.message}</span>

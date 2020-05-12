@@ -58,10 +58,10 @@ ipcMain.on('install', async (event, {repo, homeyApp}) => {
   event.reply(`installation-progress`, {app: homeyApp, progress: {step: 4, totalSteps, message: `Start installation ${homeyApp.name.en}`}});
 
   try {
-    const {stdout, stderr} = await execute(`${escape(app.getAppPath()).replace(/\s/g, '\\ ')}/node_modules/.bin/homey app install`, {cwd: repoDir});
+    const {stderr} = await execute(`${escape(app.getAppPath())}/node_modules/.bin/homey app install`, {cwd: repoDir});
     if (stderr) {
       console.error(stderr);
-      return event.reply(`installation-finished-${homeyApp.id}`, {error: stderr, app: homeyApp});
+      return event.reply(`installation-finished-${homeyApp.id}`, {error: stderr.stack, app: homeyApp});
     }
   } catch(error) {
     return event.reply(`installation-finished-${homeyApp.id}`, {error, app: homeyApp});
