@@ -21,6 +21,7 @@ module.exports = {
 
   },
   externals: {
+    npm: 'npm',
     homey: 'homey',
     'homey-lib': 'homey-lib'
   }
