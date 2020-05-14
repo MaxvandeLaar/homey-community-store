@@ -1,11 +1,28 @@
-import repos from '../assets/apps.json';
+// import repos from '../assets/apps.json';
 import axios from 'axios';
 import {ipcMain} from 'electron';
 const log = require('electron-log');
 import {AppInfo} from "../interfaces/App";
 
+let repos: {} = null;
+
+async function init(){
+  const response = await axios.get('https://raw.githubusercontent.com/MaxvandeLaar/homey-community-store/master/src/assets/apps.json').catch(console.error);
+  if (!response || response.status !== 200){
+    return;
+  }
+  log.info('RESPONSE', response.data);
+  repos = response.data;
+}
+init();
+
+
 export async function getApps(): Promise<AppInfo[]> {
   const appList: AppInfo[] = [];
+
+  if (!repos) {
+    await init();
+  }
 
   const keys = Object.keys(repos);
   const promises = keys.map(async (key) => {

@@ -8,9 +8,6 @@ import ReactMarkdown from "react-markdown/with-html";
 function AppModal({onClose, app, onInstall}: { onInstall?: (app: AppInfo) => void; onClose?: () => void; app: AppInfo }) {
   const [key, setKey] = useState('readMe');
 
-  console.log('APP', app);
-
-
   return (
     <Modal show={app !== null} onHide={onClose} size={'lg'} data-test={'test'}>
       {app !== null && (
@@ -68,13 +65,13 @@ function AppModal({onClose, app, onInstall}: { onInstall?: (app: AppInfo) => voi
                     }
                   </Tab>
                   <Tab eventKey="devices" title="Devices">
-                    {app.drivers.length > 0 && app.drivers.map((driver) => (
+                    {app.drivers?.length > 0 && app.drivers.map((driver) => (
                       <p key={driver.id}>{driver.name.en}</p>
                     ))}
                   </Tab>
                   <Tab eventKey="flowCards" title="Flow cards">
                     {
-                      app.flow.triggers?.length > 0 && (
+                      app.flow && app.flow.triggers && app.flow?.triggers.length > 0 && (
                         <>
                           <h4>Triggers</h4>
                           <ul>
@@ -87,7 +84,7 @@ function AppModal({onClose, app, onInstall}: { onInstall?: (app: AppInfo) => voi
                         </>)
                     }
                     {
-                      app.flow.conditions?.length > 0 && (
+                      app.flow && app.flow.conditions && app.flow?.conditions?.length > 0 && (
                         <>
                           <h4>Conditions</h4>
                           <ul>
@@ -100,7 +97,7 @@ function AppModal({onClose, app, onInstall}: { onInstall?: (app: AppInfo) => voi
                         </>)
                     }
                     {
-                      app.flow.actions?.length > 0 && (
+                      app.flow && app.flow.actions && app.flow?.actions?.length > 0 && (
                         <>
                           <h4>Actions</h4>
                           <ul>
