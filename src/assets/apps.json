@@ -64,5 +64,8 @@
   },
   "image.grabber": {
     "repo": "https://github.com/jordenc/image.grabber"
+  },
+  "ch.philippewechsler.hue": {
+    "repo": "https://github.com/MadMonkey87/Homey.HueExtensions"
   }
 }
