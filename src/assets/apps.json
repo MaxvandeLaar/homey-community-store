@@ -67,5 +67,8 @@
   },
   "ch.philippewechsler.hue": {
     "repo": "https://github.com/MadMonkey87/Homey.HueExtensions"
+  },
+  "cn.kaiterra": {
+    "repo": "https://github.com/MadMonkey87/homey.kaiterra"
   }
 }
