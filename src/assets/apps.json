@@ -70,5 +70,8 @@
   },
   "cn.kaiterra": {
     "repo": "https://github.com/MadMonkey87/homey.kaiterra"
+  },
+  "de.dresden-elektronik.deconz": {
+    "repo": "https://github.com/MadMonkey87/HomeyCONZ"
   }
 }
