@@ -2,6 +2,7 @@ import {ipcMain, app} from 'electron';
 import {fetch, extract} from "gitly";
 import {existsSync} from "fs";
 import {dirname, normalize, sep} from 'path'
+import {AppInfo} from "../interfaces/App";
 
 const AthomApp = require('homey').App;
 const log = require('electron-log');
@@ -19,7 +20,11 @@ function escape(path: string) {
   // return path.replace(/\s/g, '\\ ');
 }
 
-ipcMain.on('install', async (event, {repo, homeyApp}) => {
+ipcMain.on('install', async (event, {repo, homeyApp}: {repo: string, homeyApp: AppInfo}) => {
+  let host = 'github';
+  if (repo.includes('bitbucket.org')) {
+    host = 'bitbucket';
+  }
   log.info('Start download', repo);
   event.reply('installation-progress', {
     app: homeyApp,
@@ -27,6 +32,7 @@ ipcMain.on('install', async (event, {repo, homeyApp}) => {
   });
 
   const source = await fetch(repo, {
+    host,
     temp: `${escape(app.getAppPath())}${sep}tmp${sep}`
   }).catch((error) => event.reply(`installation-finished-${homeyApp.id}`, {error, app: homeyApp}));
 
