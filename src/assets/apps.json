@@ -38,9 +38,6 @@
   "com.soma.connect": {
     "repo": "https://github.com/AdyRock/com.soma.connect"
   },
-  "com.onvif": {
-    "repo": "https://github.com/AdyRock/com.onvif"
-  },
   "com.uc.heimdall": {
     "repo": "https://github.com/daneedk/com.uc.heimdall"
   },
