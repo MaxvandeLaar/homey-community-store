@@ -66,6 +66,10 @@ ipcRenderer.once('check-for-update-completed', (event, data) => {
 });
 ipcRenderer.send('check-for-update');
 
+ipcRenderer.on('check-for-updates', (event, data) => {
+  ipcRenderer.send('check-for-update');
+});
+
 ReactDOM.render(<AppContainer />, document.getElementById('root'));
 
 function AppContainer() {
