@@ -8,7 +8,7 @@ Just download your OS corresponding release here [https://github.com/MaxvandeLaa
 Please note that I did not sign the app as I am not willing to pay full price for Microsoft and Apple certificates so you might need to allow the app to run. It is definitely safe.
 
 ## How to get your app listed
-You can create a pull request and add your repo here [https://github.com/MaxvandeLaar/homey-community-store/blob/master/src/assets/apps.json](https://github.com/MaxvandeLaar/homey-community-store/blob/master/src/assets/apps.json). The app needs to conform to the same standards as official apps. As long as it runs and has the required files, it will be accepted. No matter if it's a duplicate or too complex app 😊  
+Just create an issue or you can create a pull request and add your repo here [https://github.com/MaxvandeLaar/homey-community-store/blob/master/src/assets/apps.json](https://github.com/MaxvandeLaar/homey-community-store/blob/master/src/assets/apps.json). The app needs to conform to the same standards as official apps. As long as it runs and has the required files, it will be accepted. No matter if it's a duplicate or too complex app 😊  
 
 ### Development info
 
