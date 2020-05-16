@@ -70,5 +70,8 @@
   },
   "de.dresden-elektronik.deconz": {
     "repo": "https://github.com/MadMonkey87/HomeyCONZ"
+  },
+  "com.bunq": {
+    "repo": "https://github.com/WeeJeWel/com.bunq"
   }
 }
