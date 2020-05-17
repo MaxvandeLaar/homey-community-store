@@ -11,10 +11,11 @@
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "publish": "electron-forge publish",
+    "publish": "electron-forge publish --dry-run",
     "lint": "eslint --ext .ts .",
-    "make": "electron-forge make --targets=darwin,linux,win32",
+    "make": "electron-forge make --targets=darwin,linux",
     "make:update:darwin": "cd out/Homey\\ Community\\ Store-darwin-x64/Homey\\ Community\\ Store.app/Contents/Resources/app && zip -r update-source.zip ./",
+    "postmake:update:darwin": "mkdir -p ./out/make/update-source/ && mv out/Homey\\ Community\\ Store-darwin-x64/Homey\\ Community\\ Store.app/Contents/Resources/app/update-source.zip ./out/make/update-source/",
     "make:update:linux": "cd out/Homey\\ Community\\ Store-linux-x64/resources/app && zip -r update-source.zip ./",
     "make:update:win": "cd out/Homey\\ Community\\ Store-win32-x64/resources/app && zip -r update-source.zip ./",
     "make:darwin": "electron-forge make --platform=darwin --arch=x64",
