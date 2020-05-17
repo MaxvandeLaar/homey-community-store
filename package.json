@@ -1,8 +1,8 @@
 {
   "name": "homey-community-store",
   "productName": "Homey Community Store",
-  "version": "0.1.4",
-  "description": "My Electron application description",
+  "version": "0.2.0",
+  "description": "The Homey Community Store provides an alternative app store next to the Offical Athom Store",
   "main": ".webpack/main",
   "repository": {
     "type": "git",
@@ -18,9 +18,11 @@
     "make:win": "electron-forge make --platform=win32 --arch=x64",
     "postmake:win": "npm run build:win",
     "build": "rm -rf out/make && cd out/Homey\\ Community\\ Store-darwin-x64/Homey\\ Community\\ Store.app/Contents/Resources/app && npm i homey npm electron-log",
-    "postbuild": "cp -rf ./custom_modules/homey out/Homey\\ Community\\ Store-darwin-x64/Homey\\ Community\\ Store.app/Contents/Resources/app/node_modules/ && zip -r out/Homey\\ Community\\ Store\\ MacOS.zip out/Homey\\ Community\\ Store-darwin-x64",
+    "postbuild": "cp -rf ./custom_modules/homey out/Homey\\ Community\\ Store-darwin-x64/Homey\\ Community\\ Store.app/Contents/Resources/app/node_modules/ && cd out && zip -r Homey\\ Community\\ Store\\ MacOS.zip Homey\\ Community\\ Store-darwin-x64",
     "build:win": "rm -rf out/make && cd out/Homey\\ Community\\ Store-win32-x64/resources/app && npm i homey npm electron-log",
-    "postbuild:win": "cp -rf ./custom_modules/homey out/Homey\\ Community\\ Store-win32-x64/resources/app/node_modules/ && zip -r out/Homey\\ Community\\ Store\\ Windows.zip out/Homey\\ Community\\ Store-win32-x64"
+    "postbuild:win": "cp -rf ./custom_modules/homey out/Homey\\ Community\\ Store-win32-x64/resources/app/node_modules/ && cd out && zip -r Homey\\ Community\\ Store\\ Windows.zip Homey\\ Community\\ Store-win32-x64",
+    "make:update": "cd out/Homey\\ Community\\ Store-darwin-x64/Homey\\ Community\\ Store.app/Contents/Resources/app && zip -r update-source.zip ./",
+    "postmake:update": "cd out/Homey\\ Community\\ Store-darwin-x64/Homey\\ Community\\ Store.app/Contents/Resources/app && mv ./update-source.zip ../../../../../"
   },
   "keywords": [],
   "author": {
