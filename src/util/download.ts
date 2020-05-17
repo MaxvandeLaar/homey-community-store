@@ -1,24 +1,20 @@
 import {ipcMain, app} from 'electron';
 import {fetch, extract} from "gitly";
 import {existsSync} from "fs";
-import {dirname, normalize, sep} from 'path'
+import {dirname, sep} from 'path'
 import {AppInfo} from "../interfaces/App";
 
 const AthomApp = require('homey').App;
 const log = require('electron-log');
 
 const fixPath = require('fix-path');
-const npm = require('npm');
 const slash = require('slash');
+import {escape} from "./file";
+import { npmInstall } from './npm';
 
 fixPath();
 
 const totalSteps = 4;
-
-function escape(path: string) {
-  return slash(normalize(path));
-  // return path.replace(/\s/g, '\\ ');
-}
 
 ipcMain.on('install', async (event, {repo, homeyApp}: {repo: string, homeyApp: AppInfo}) => {
   let host = 'github';
@@ -104,7 +100,7 @@ ipcMain.on('install', async (event, {repo, homeyApp}: {repo: string, homeyApp: A
     const result = await appAPI.install();
     log.info('install result', result);
   } catch (error) {
-    console.log(error);
+    log.log(error);
     return event.reply(`installation-finished-${homeyApp.id}`, {error, app: homeyApp});
   }
 
@@ -115,31 +111,5 @@ ipcMain.on('install', async (event, {repo, homeyApp}: {repo: string, homeyApp: A
   event.reply(`installation-finished-${homeyApp.id}`, {app: homeyApp});
 });
 
-function npmInstall(path: string) {
-  return new Promise((resolve, reject) => {
-    npm.load({
-      loaded: false,
-      progress: false,
-      'no-audit': true,
-      'only': 'prod',
-    }, (err: any) => {
 
-      if (err){
-        return reject(err);
-      }
-
-      npm.commands.install(path, [], (error: any, data: any) => {
-        if (error) {
-          return reject(error);
-        }
-        log.debug("NPM install result", data);
-        return resolve(data);
-      });
-
-      npm.on("log", function (message: any) {
-        log.debug(message);
-      });
-    });
-  });
-}
 

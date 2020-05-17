@@ -8,7 +8,7 @@ import {AppInfo} from "../interfaces/App";
 let repos: { [key: string]: any } = null;
 
 async function init() {
-  const response = await axios.get('https://raw.githubusercontent.com/MaxvandeLaar/homey-community-store/master/src/assets/apps.json').catch(console.error);
+  const response = await axios.get('https://raw.githubusercontent.com/MaxvandeLaar/homey-community-store/master/src/assets/apps.json').catch(log.error);
   if (!response || response.status !== 200) {
     return;
   }
@@ -51,7 +51,7 @@ export async function getApps(): Promise<AppInfo[]> {
       return key
     });
     if (!response || response.status !== 200) {
-      // console.error(response ? response.statusText : response);
+      log.error(response ? response.statusText : response);
       return key;
     }
     let appInfo: AppInfo = response.data;
@@ -65,9 +65,9 @@ export async function getApps(): Promise<AppInfo[]> {
       }
     }
 
-    const iconResponse: any = await axios.get(`${rawUrl}/assets/icon.svg`).catch(console.error);
+    const iconResponse: any = await axios.get(`${rawUrl}/assets/icon.svg`).catch(log.error);
     if (!iconResponse || iconResponse.status !== 200) {
-      // console.error(iconResponse ? iconResponse.statusText : iconResponse);
+      log.error(iconResponse ? iconResponse.statusText : iconResponse);
       return key;
     } else {
       appInfo.icon = iconResponse.data;

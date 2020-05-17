@@ -1,10 +1,9 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
-import {join} from 'path';
+import {app, BrowserWindow, ipcMain} from 'electron';
+
 declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
-import {version} from '../package.json';
-import axios from 'axios';
-const log = require('electron-log');
-const cmp = require('semver-compare');
+import {checkForStoreUpdate, updateStore} from "./util/store";
+import log from 'electron-log';
+import {initFolders} from "./util/file";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -12,6 +11,11 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 }
 
 const createWindow = () => {
+  log.debug('Running app in mode:', process.env.NODE_ENV);
+  log.debug('Initialise required folders');
+  initFolders();
+
+  log.info('Create the main window');
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     height: 800,
@@ -32,19 +36,18 @@ const createWindow = () => {
   }
 };
 
-
 ipcMain.on('check-for-update', async (event, args) => {
-  const response = await axios.get('https://api.github.com/repos/MaxvandeLaar/homey-community-store/releases/latest').catch(console.error);
-  if (!response || response.status !== 200) {
-    return;
-  }
-  const remotePackage = response.data;
-  const remoteVersion = remotePackage.tag_name.replace(/v/gi, '');
-  if (cmp(remoteVersion, version) === 1) { //Compare semver version to detect if update is available
+  if (await checkForStoreUpdate()) { //Compare semver version to detect if update is available
     event.reply('check-for-update-completed', true);
   } else {
     log.info('Running latest version');
   }
+});
+
+ipcMain.on('update-store', async (event, args) => {
+  log.info('Start updating store!');
+  const update: { success: boolean, error?: any } = await updateStore();
+  event.reply('update-store-finished', update);
 });
 
 // This method will be called when Electron has finished
@@ -57,7 +60,7 @@ app.on('window-all-closed', () => {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   // if (process.platform !== 'darwin') {
-    app.quit();
+  app.quit();
   // }
 });
 

@@ -4,7 +4,6 @@ import Logo from './Logo';
 import './TopBar.scss';
 import {Nav, Navbar, FormControl, Button, Image, NavDropdown} from "react-bootstrap";
 import {Homey} from "../../interfaces/Homey";
-import {ipcRenderer} from 'electron';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 interface TopBarProps {
@@ -38,7 +37,6 @@ function TopBar({
   }
 
   function setActiveHomey(homey: Homey) {
-    console.log('CLICK HOMEY', homey);
     setActiveHomeyFunc(homey);
   }
 

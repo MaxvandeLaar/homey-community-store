@@ -58,13 +58,30 @@ defaults.stack = myStack;
 
 library.add(faDownload, faSignInAlt, faSpinner, faAsterisk);
 
-ipcRenderer.once('check-for-update-completed', (event, data) => {
+ipcRenderer.once('check-for-update-completed', (event, args) => {
   const result = confirm('Update for the community store is available! Please download the update from github!');
   if (result === true) {
-    shell.openExternal('https://github.com/MaxvandeLaar/homey-community-store/releases');
+    ipcRenderer.send('update-store');
   }
 });
 ipcRenderer.send('check-for-update');
+
+ipcRenderer.once('update-store-finished', (event, args) => {
+  if (args.success) {
+    alert({
+      title: 'Store update completed',
+      text: 'The store is updated to a new version. Please restart the Homey Community Store to use the new update!',
+      type: 'success',
+      modules: new Map([
+        ...[],
+        [PNotifyDesktop, {
+          title: `Homey Community Store update completed!`,
+          text: `The store is updated to a new version. Please restart the Homey Community Store to use the new update!`
+        }]
+      ])
+    });
+  }
+});
 
 ReactDOM.render(<AppContainer />, document.getElementById('root'));
 
@@ -152,7 +169,8 @@ function AppContainer() {
       <Container>
         <Row>
           <Col className={'text-center small'}>
-            <span>Version {version}<br />Created by <a href={'#'} onClick={() => shell.openExternal('https://github.com/MaxvandeLaar')}>{author.name}</a></span>
+            <span>Version {version}<br />Created by <a href={'#'}
+                                                       onClick={() => shell.openExternal('https://github.com/MaxvandeLaar')}>{author.name}</a></span>
           </Col>
         </Row>
       </Container>
