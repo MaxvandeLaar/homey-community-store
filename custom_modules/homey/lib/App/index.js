@@ -680,13 +680,10 @@ class App {
     return tmp.file().then( async o => {
 
       let tmpPath = o.path;
-      Log('tmpPath', o.path);
 
       // Get list of files to pack, excluding npm prune paths and files in .homeyignore
       const prunePaths = await this._getPrunePaths();
-      Log('prunePaths', prunePaths);
       const fileEntries = await this._getPackFileEntries(prunePaths);
-      Log('fileEntries', fileEntries);
 
       let tarOpts = {
         entries: fileEntries,
