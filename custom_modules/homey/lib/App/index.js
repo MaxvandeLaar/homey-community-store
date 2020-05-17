@@ -667,7 +667,6 @@ class App {
   async _getPrunePaths() {
     // Check if npm is available then start prune dry-run
     const npmInstalled = await NpmCommands.isNpmInstalled();
-    Log('GET PRUNE', this.path);
     if (npmInstalled) {
       Log(colors.green('✓ Pruning dev dependencies...'));
       return NpmCommands.getPrunePaths({path: this.path});

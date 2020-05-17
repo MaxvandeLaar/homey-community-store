@@ -13,16 +13,17 @@
     "package": "electron-forge package",
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts .",
-    "make": "electron-forge make",
-    "postmake": "npm run build",
+    "make": "electron-forge make --targets=darwin,linux,win32",
+    "make:update:darwin": "cd out/Homey\\ Community\\ Store-darwin-x64/Homey\\ Community\\ Store.app/Contents/Resources/app && zip -r update-source.zip ./",
+    "make:update:linux": "cd out/Homey\\ Community\\ Store-linux-x64/resources/app && zip -r update-source.zip ./",
+    "make:update:win": "cd out/Homey\\ Community\\ Store-win32-x64/resources/app && zip -r update-source.zip ./",
+    "make:darwin": "electron-forge make --platform=darwin --arch=x64",
+    "pack:win": "electron-forge package --platform=win32 --arch=x64",
     "make:win": "electron-forge make --platform=win32 --arch=x64",
-    "postmake:win": "npm run build:win",
-    "build": "rm -rf out/make && cd out/Homey\\ Community\\ Store-darwin-x64/Homey\\ Community\\ Store.app/Contents/Resources/app && npm i homey npm electron-log",
-    "postbuild": "cp -rf ./custom_modules/homey out/Homey\\ Community\\ Store-darwin-x64/Homey\\ Community\\ Store.app/Contents/Resources/app/node_modules/ && cd out && zip -r Homey\\ Community\\ Store\\ MacOS.zip Homey\\ Community\\ Store-darwin-x64",
-    "build:win": "rm -rf out/make && cd out/Homey\\ Community\\ Store-win32-x64/resources/app && npm i homey npm electron-log",
-    "postbuild:win": "cp -rf ./custom_modules/homey out/Homey\\ Community\\ Store-win32-x64/resources/app/node_modules/ && cd out && zip -r Homey\\ Community\\ Store\\ Windows.zip Homey\\ Community\\ Store-win32-x64",
-    "make:update": "cd out/Homey\\ Community\\ Store-darwin-x64/Homey\\ Community\\ Store.app/Contents/Resources/app && zip -r update-source.zip ./",
-    "postmake:update": "cd out/Homey\\ Community\\ Store-darwin-x64/Homey\\ Community\\ Store.app/Contents/Resources/app && mv ./update-source.zip ../../../../../"
+    "make:win:skip": "electron-forge make --platform=win32 --arch=x64 --skip-package",
+    "make:win:mac": "npm run pack:win && mkdir -p out/make/squirrel.windows/x64",
+    "postmake:win:mac": "cd out && zip -r Homey\\ Community\\ Store-win32-x64.zip ./Homey\\ Community\\ Store-win32-x64 && mv ./Homey\\ Community\\ Store-win32-x64.zip ./make/squirrel.windows/x64/" ,
+    "make:linux": "electron-forge make --platform=linux --arch=x64"
   },
   "keywords": [],
   "author": {
@@ -31,75 +32,13 @@
   },
   "license": "GPL-3.0-or-later",
   "config": {
-    "forge": {
-      "packagerConfig": {
-        "packageManager": "npm",
-        "icon": "src/assets/logo.icns"
-      },
-      "rebuildConfig": {
-        "extraModules": [
-          "homey",
-          "npm"
-        ]
-      },
-      "publishers": [
-        {
-          "name": "@electron-forge/publisher-github",
-          "config": {
-            "repository": {
-              "owner": "MaxvandeLaar",
-              "name": "homey-community-store"
-            },
-            "prerelease": true
-          }
-        }
-      ],
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "homey-community-store"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ],
-      "plugins": [
-        [
-          "@electron-forge/plugin-webpack",
-          {
-            "mainConfig": "./webpack.main.config.js",
-            "renderer": {
-              "config": "./webpack.renderer.config.js",
-              "entryPoints": [
-                {
-                  "html": "./src/index.html",
-                  "js": "./src/renderer.tsx",
-                  "name": "main_window"
-                }
-              ]
-            }
-          }
-        ]
-      ]
-    }
+    "forge": "./forge.config.js"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.50",
     "@electron-forge/maker-deb": "^6.0.0-beta.50",
     "@electron-forge/maker-rpm": "^6.0.0-beta.50",
+    "@electron-forge/maker-snap": "^6.0.0-beta.51",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.50",
     "@electron-forge/maker-zip": "^6.0.0-beta.50",
     "@electron-forge/plugin-webpack": "^6.0.0-beta.50",
@@ -107,6 +46,9 @@
     "@types/adm-zip": "^0.4.33",
     "@types/axios": "^0.14.0",
     "@types/progress-stream": "^2.0.0",
+    "@types/react": "^16.9.23",
+    "@types/react-dom": "^16.9.5",
+    "@types/rimraf": "^3.0.0",
     "@types/semver-compare": "^1.0.1",
     "@types/shelljs": "^0.8.6",
     "@types/styled-components": "^5.0.1",
@@ -115,6 +57,7 @@
     "@typescript-eslint/parser": "^2.23.0",
     "css-loader": "^3.4.2",
     "electron": "^8.1.1",
+    "electron-prebuilt-compile": "8.2.0",
     "eslint": "^6.8.0",
     "eslint-plugin-import": "^2.20.1",
     "fork-ts-checker-webpack-plugin": "^3.1.1",
@@ -127,10 +70,7 @@
     "ts-loader": "^6.2.1",
     "typescript": "^3.8.3",
     "webpack": "^4.42.0",
-    "webpack-node-externals": "^1.7.2",
-    "@types/react": "^16.9.23",
-    "@types/react-dom": "^16.9.5",
-    "@types/rimraf": "^3.0.0"
+    "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.27",
