@@ -1,31 +1,3 @@
-/**
- * This file will automatically be loaded by webpack and run in the "renderer" context.
- * To learn more about the differences between the "main" and the "renderer" context in
- * Electron, visit:
- *
- * https://electronjs.org/docs/tutorial/application-architecture#main-and-renderer-processes
- *
- * By default, Node.js integration in this file is disabled. When enabling Node.js integration
- * in a renderer process, please be aware of potential security implications. You can read
- * more about security risks here:
- *
- * https://electronjs.org/docs/tutorial/security
- *
- * To enable Node.js integration in this file, open up `main.js` and enable the `nodeIntegration`
- * flag:
- *
- * ```
- *  // Create the browser window.
- *  mainWindow = new BrowserWindow({
- *    width: 800,
- *    height: 600,
- *    webPreferences: {
- *      nodeIntegration: true
- *    }
- *  });
- * ```
- */
-
 import './index.css';
 import {ipcRenderer, shell} from 'electron';
 import React, {useEffect, useState} from 'react';
@@ -37,6 +9,7 @@ import {faAsterisk, faDownload, faSignInAlt, faSpinner} from '@fortawesome/free-
 import './style/style.scss';
 import {version, author} from '../package.json';
 import {Container, Row, Col} from 'react-bootstrap';
+import log from 'electron-log';
 // @ts-ignore
 import {alert, defaultModules, defaults, Stack} from '@pnotify/core';
 // @ts-ignore
@@ -58,16 +31,24 @@ defaults.stack = myStack;
 
 library.add(faDownload, faSignInAlt, faSpinner, faAsterisk);
 
-ipcRenderer.once('check-for-update-completed', (event, args) => {
-  const result = confirm('Update for the community store is available! Please download the update from github!');
+ipcRenderer.on('check-for-update-completed', (event, args) => {
+  log.info('An update is available for the store, ask if the user wants to install it');
+  const result = confirm('An update for the community store is available! Would you like to download and install it? You should restart the app after the update is completed');
+  log.info('Update the store to a newer version?', result);
   if (result === true) {
     ipcRenderer.send('update-store');
   }
 });
 ipcRenderer.send('check-for-update');
 
-ipcRenderer.once('update-store-finished', (event, args) => {
+ipcRenderer.on('update-store-finished', (event, args) => {
+  log.info('Store update is complete', args);
   if (args.success) {
+    alert({
+      title: 'Store update completed',
+      text: 'The store is updated to a new version. Please restart the Homey Community Store to use the new update!',
+      type: 'success',
+    });
     alert({
       title: 'Store update completed',
       text: 'The store is updated to a new version. Please restart the Homey Community Store to use the new update!',
@@ -77,6 +58,24 @@ ipcRenderer.once('update-store-finished', (event, args) => {
         [PNotifyDesktop, {
           title: `Homey Community Store update completed!`,
           text: `The store is updated to a new version. Please restart the Homey Community Store to use the new update!`
+        }]
+      ])
+    });
+  } else {
+    alert({
+      title: 'Store update failed',
+      text: args.error,
+      type: 'error',
+    });
+    alert({
+      title: 'Store update failed',
+      text: args.error,
+      type: 'error',
+      modules: new Map([
+        ...[],
+        [PNotifyDesktop, {
+          title: `Homey Community Store update failed!`,
+          text: args.error
         }]
       ])
     });
@@ -90,9 +89,11 @@ function AppContainer() {
   const [userProfile, setUserProfile] = useState(null);
   const [activeHomey, setActiveHomey] = useState(null);
   const [searchValue, setSearchValue] = useState('');
+  const [waitingForLogin, setWaitingForLogin] = useState(false);
   const [waitingForAuth, setWaitingForAuth] = useState(false);
 
   ipcRenderer.on('error', (event, args) => {
+    log.error('Received error from server', args);
     alert({
       title: args.title,
       text: args.message,
@@ -101,26 +102,35 @@ function AppContainer() {
   });
 
   useEffect(() => {
+    log.debug('Has permission to show desktop notifications?', Notification.permission);
     if (Notification.permission !== "denied") {
+      log.debug('Ask for desktop notification permission');
       Notification.requestPermission().then(function (permission) {
-
+        log.debug('Desktop notification answer', permission);
       });
     }
 
-    if (!loggedIn || !userProfile) {
+    if ((!loggedIn || !userProfile) && !waitingForAuth) {
+      setWaitingForAuth(true);
+      log.debug('User not found, check authentication');
       isAuthenticated();
     }
   }, [loggedIn, userProfile, activeHomey]);
 
 
   function isAuthenticated() {
-    ipcRenderer.once('user-authenticated', (event, {loggedIn, profile, activeHomey}) => {
+    log.debug('Check if user is authenticated');
+    ipcRenderer.once('user-authenticated', (event, args) => {
+      setWaitingForAuth(false);
+      log.debug('User authentication check finished', args);
+      const {loggedIn, profile, activeHomey} = args;
       setLoggedIn(loggedIn);
       if (loggedIn && profile) {
+        log.debug('User profile', profile);
         setUserProfile(profile);
-        console.log('Profile', profile);
       }
       if (loggedIn && activeHomey) {
+        log.debug('Active Homey', activeHomey);
         setActiveHomey(activeHomey);
       }
     });
@@ -128,16 +138,20 @@ function AppContainer() {
   }
 
   function loginUser() {
-    setWaitingForAuth(true);
+    log.debug('Login user');
+    setWaitingForLogin(true);
     ipcRenderer.once('user-logged-in', (event, args) => {
-      setWaitingForAuth(false);
+      log.debug('Login user completed');
+      setWaitingForLogin(false);
       isAuthenticated();
     });
     ipcRenderer.send('login-user');
   }
 
   function logoutUser() {
+    log.debug('Logout user');
     ipcRenderer.once('user-logged-out', (event, args) => {
+      log.debug('Logout user completed');
       isAuthenticated();
     });
     ipcRenderer.send('logout-user');
@@ -148,7 +162,9 @@ function AppContainer() {
   }
 
   function setActiveHomeyFunc(homey: Homey) {
+    log.debug('Set active homey', homey);
     ipcRenderer.once('active-homey-set', (event, args) => {
+      log.debug('Set active homey completed', args);
       setActiveHomey(args.homey);
     });
     ipcRenderer.send('set-active-homey', {homey});
@@ -160,7 +176,7 @@ function AppContainer() {
               profile={userProfile}
               activeHomey={activeHomey}
               logoutFunc={logoutUser}
-              waitingForAuth={waitingForAuth}
+              waitingForAuth={waitingForLogin}
               setActiveHomeyFunc={setActiveHomeyFunc}
       />
       <Container className={'mt-5'}>
