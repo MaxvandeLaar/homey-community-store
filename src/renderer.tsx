@@ -33,7 +33,7 @@ library.add(faDownload, faSignInAlt, faSpinner, faAsterisk);
 
 ipcRenderer.on('check-for-update-completed', (event, args) => {
   log.info('An update is available for the store, ask if the user wants to install it');
-  const result = confirm('An update for the community store is available! Would you like to download and install it? You should restart the app after the update is completed');
+  const result = confirm('An update for the community store is available! You should restart the app after the update is completed.\n\nWould you like to install the update?');
   log.info('Update the store to a newer version?', result);
   if (result === true) {
     ipcRenderer.send('update-store');
