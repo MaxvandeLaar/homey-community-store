@@ -37,7 +37,9 @@ const createWindow = () => {
 };
 
 ipcMain.on('check-for-update', async (event, args) => {
+  log.info('Check for Store update');
   if (await checkForStoreUpdate()) { //Compare semver version to detect if update is available
+    log.info('App Store update is available');
     event.reply('check-for-update-completed', true);
   } else {
     log.info('Running latest version');
@@ -45,8 +47,12 @@ ipcMain.on('check-for-update', async (event, args) => {
 });
 
 ipcMain.on('update-store', async (event, args) => {
-  log.info('Start updating store!');
+  log.info('Store update started');
   const update: { success: boolean, error?: any } = await updateStore();
+  if (!update.success) {
+    log.error('Store update failed', update);
+  }
+  log.info('Store update process completed');
   event.reply('update-store-finished', update);
 });
 
@@ -57,11 +63,7 @@ app.on('ready', createWindow);
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  // if (process.platform !== 'darwin') {
   app.quit();
-  // }
 });
 
 app.on('activate', () => {
