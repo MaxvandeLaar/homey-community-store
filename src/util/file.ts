@@ -24,17 +24,17 @@ export function copy(src: string, dest: string, overwrite = false) {
   return new Promise((resolve, reject) => {
     copyRecursive(src, dest, options)
       .on(copyRecursive.events.COPY_FILE_START, function(copyOperation: any) {
-        log.info('Copying file ' + copyOperation.src + '...');
+        log.debug('Copying file ' + copyOperation.src + '...');
       })
       .on(copyRecursive.events.COPY_FILE_COMPLETE, function(copyOperation: any) {
-        log.info('Copied to ' + copyOperation.dest);
+        log.debug('Copied to ' + copyOperation.dest);
       })
       .on(copyRecursive.events.ERROR, function(error: any, copyOperation: any) {
         log.error('Unable to copy ' + copyOperation.dest);
         reject(error);
       })
       .then(function(results: any) {
-        log.info(results.length + ' file(s) copied');
+        log.debug(results.length + ' file(s) copied');
         resolve(results);
       })
       .catch(function(error: any) {
