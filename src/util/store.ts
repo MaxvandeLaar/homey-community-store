@@ -9,7 +9,6 @@ import Zip from 'adm-zip';
 import {escape, copy, rootPath, readFile, writeFile} from "./file";
 import rimraf from 'rimraf';
 import os from 'os';
-import {app} from 'electron';
 
 const plist = require('plist');
 
@@ -20,11 +19,14 @@ const streamPipeline = promisify(require('stream').pipeline);
 export async function checkForStoreUpdate() {
   const response = await axios.get('https://api.github.com/repos/MaxvandeLaar/homey-community-store/releases/latest').catch(log.error);
   if (!response || response.status !== 200) {
+    log.warn('Failed check for update', response);
     return false; // No update if can't connect to repo
   }
   const remotePackage = response.data;
   const remoteVersion = remotePackage.tag_name.replace(/v/gi, '');
-  return cmp(remoteVersion, version) === 1; // 1 === removeVersion is higher than current app version
+  const resultCheck = cmp(remoteVersion, version) === 1; // 1 === removeVersion is higher than current app version
+  log.info('Is update required?', `current ${version}`, `remote ${remoteVersion}`, `compare result ${resultCheck}`);
+  return resultCheck;
 }
 
 export async function updateStore() {

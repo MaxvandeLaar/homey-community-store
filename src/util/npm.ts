@@ -11,11 +11,13 @@ export function npmInstall(path: string) {
     }, (err: any) => {
 
       if (err){
+        log.error(err);
         return reject(err);
       }
 
       npm.commands.install(path, [], (error: any, data: any) => {
         if (error) {
+          log.error(error);
           return reject(error);
         }
         log.debug("NPM install result", data);
