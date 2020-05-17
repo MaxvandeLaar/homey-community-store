@@ -29,7 +29,7 @@
     "name": "Max van de Laar",
     "email": "max.vandelaar@me.com"
   },
-  "license": "MIT",
+  "license": "GPL-3.0-or-later",
   "config": {
     "forge": {
       "packagerConfig": {
