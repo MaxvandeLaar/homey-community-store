@@ -82,6 +82,10 @@ ipcRenderer.on('update-store-finished', (event, args) => {
   }
 });
 
+ipcRenderer.on('check-for-updates', (event, data) => {
+  ipcRenderer.send('check-for-update');
+});
+
 ReactDOM.render(<AppContainer />, document.getElementById('root'));
 
 function AppContainer() {
