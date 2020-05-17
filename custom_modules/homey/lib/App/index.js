@@ -667,7 +667,6 @@ class App {
   async _getPrunePaths() {
     // Check if npm is available then start prune dry-run
     const npmInstalled = await NpmCommands.isNpmInstalled();
-    Log('GET PRUNE', this.path);
     if (npmInstalled) {
       Log(colors.green('✓ Pruning dev dependencies...'));
       return NpmCommands.getPrunePaths({path: this.path});
@@ -680,13 +679,10 @@ class App {
     return tmp.file().then( async o => {
 
       let tmpPath = o.path;
-      Log('tmpPath', o.path);
 
       // Get list of files to pack, excluding npm prune paths and files in .homeyignore
       const prunePaths = await this._getPrunePaths();
-      Log('prunePaths', prunePaths);
       const fileEntries = await this._getPackFileEntries(prunePaths);
-      Log('fileEntries', fileEntries);
 
       let tarOpts = {
         entries: fileEntries,

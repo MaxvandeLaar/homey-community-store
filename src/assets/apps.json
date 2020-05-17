@@ -38,6 +38,9 @@
   "com.soma.connect": {
     "repo": "https://github.com/AdyRock/com.soma.connect"
   },
+  "com.onvif": {
+    "repo": "https://github.com/AdyRock/com.onvif"
+  },
   "com.uc.heimdall": {
     "repo": "https://github.com/daneedk/com.uc.heimdall"
   },
@@ -70,6 +73,9 @@
   },
   "de.dresden-elektronik.deconz": {
     "repo": "https://github.com/MadMonkey87/HomeyCONZ"
+  },
+  "nl.terryhendrix.smartpresence": {
+    "repo": "https://bitbucket.org/terryhendrix/homey-smartpresence"
   },
   "com.bunq": {
     "repo": "https://github.com/WeeJeWel/com.bunq"

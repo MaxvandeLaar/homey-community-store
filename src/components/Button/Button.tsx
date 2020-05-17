@@ -26,14 +26,6 @@ function Button({title = '', style = {}, onClick, children, className}: ButtonPr
 
   }, [theStyle]);
 
-  // function mouseEnter(){
-  //   setTheStyle({...defaultStyle, ...hoverStyle});
-  // }
-  //
-  // function mouseLeave() {
-  //   setTheStyle(defaultStyle);
-  // }
-
   return (
     <button style={{...theStyle, ...style}} onClick={onClick} className={className}>{children}</button>
   )

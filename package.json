@@ -1,8 +1,8 @@
 {
   "name": "homey-community-store",
   "productName": "Homey Community Store",
-  "version": "0.1.5",
-  "description": "My Electron application description",
+  "version": "0.2.0",
+  "description": "The Homey Community Store provides an alternative app store next to the Offical Athom Store",
   "main": ".webpack/main",
   "repository": {
     "type": "git",
@@ -11,99 +11,46 @@
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "publish": "electron-forge publish",
+    "publish": "electron-forge publish --dry-run",
     "lint": "eslint --ext .ts .",
-    "make": "electron-forge make",
-    "postmake": "npm run build",
+    "make": "electron-forge make --targets=darwin,linux",
+    "make:update:darwin": "cd out/Homey\\ Community\\ Store-darwin-x64/Homey\\ Community\\ Store.app/Contents/Resources/app && zip -r update-source.zip ./",
+    "postmake:update:darwin": "mkdir -p ./out/make/update-source/ && mv out/Homey\\ Community\\ Store-darwin-x64/Homey\\ Community\\ Store.app/Contents/Resources/app/update-source.zip ./out/make/update-source/",
+    "make:update:linux": "cd out/Homey\\ Community\\ Store-linux-x64/resources/app && zip -r update-source.zip ./",
+    "make:update:win": "cd out/Homey\\ Community\\ Store-win32-x64/resources/app && zip -r update-source.zip ./",
+    "make:darwin": "electron-forge make --platform=darwin --arch=x64",
+    "pack:win": "electron-forge package --platform=win32 --arch=x64",
     "make:win": "electron-forge make --platform=win32 --arch=x64",
-    "postmake:win": "npm run build:win",
-    "build": "rm -rf out/make && cd out/Homey\\ Community\\ Store-darwin-x64/Homey\\ Community\\ Store.app/Contents/Resources/app && npm i homey npm electron-log",
-    "postbuild": "cp -rf ./custom_modules/homey out/Homey\\ Community\\ Store-darwin-x64/Homey\\ Community\\ Store.app/Contents/Resources/app/node_modules/ && zip -r out/Homey\\ Community\\ Store\\ MacOS.zip out/Homey\\ Community\\ Store-darwin-x64",
-    "build:win": "rm -rf out/make && cd out/Homey\\ Community\\ Store-win32-x64/resources/app && npm i homey npm electron-log",
-    "postbuild:win": "cp -rf ./custom_modules/homey out/Homey\\ Community\\ Store-win32-x64/resources/app/node_modules/ && zip -r out/Homey\\ Community\\ Store\\ Windows.zip out/Homey\\ Community\\ Store-win32-x64"
+    "make:win:skip": "electron-forge make --platform=win32 --arch=x64 --skip-package",
+    "make:win:mac": "npm run pack:win && mkdir -p out/make/squirrel.windows/x64",
+    "postmake:win:mac": "cd out && zip -r Homey\\ Community\\ Store-win32-x64.zip ./Homey\\ Community\\ Store-win32-x64 && mv ./Homey\\ Community\\ Store-win32-x64.zip ./make/squirrel.windows/x64/" ,
+    "make:linux": "electron-forge make --platform=linux --arch=x64"
   },
   "keywords": [],
   "author": {
     "name": "Max van de Laar",
     "email": "max.vandelaar@me.com"
   },
-  "license": "MIT",
+  "license": "GPL-3.0-or-later",
   "config": {
-    "forge": {
-      "packagerConfig": {
-        "packageManager": "npm",
-        "icon": "src/assets/logo.icns"
-      },
-      "rebuildConfig": {
-        "extraModules": [
-          "homey",
-          "npm"
-        ]
-      },
-      "publishers": [
-        {
-          "name": "@electron-forge/publisher-github",
-          "config": {
-            "repository": {
-              "owner": "MaxvandeLaar",
-              "name": "homey-community-store"
-            },
-            "prerelease": true
-          }
-        }
-      ],
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "homey-community-store"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ],
-      "plugins": [
-        [
-          "@electron-forge/plugin-webpack",
-          {
-            "mainConfig": "./webpack.main.config.js",
-            "renderer": {
-              "config": "./webpack.renderer.config.js",
-              "entryPoints": [
-                {
-                  "html": "./src/index.html",
-                  "js": "./src/renderer.tsx",
-                  "name": "main_window"
-                }
-              ]
-            }
-          }
-        ]
-      ]
-    }
+    "forge": "./forge.config.js"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.50",
     "@electron-forge/maker-deb": "^6.0.0-beta.50",
     "@electron-forge/maker-rpm": "^6.0.0-beta.50",
+    "@electron-forge/maker-snap": "^6.0.0-beta.51",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.50",
     "@electron-forge/maker-zip": "^6.0.0-beta.50",
     "@electron-forge/plugin-webpack": "^6.0.0-beta.50",
     "@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
+    "@types/adm-zip": "^0.4.33",
     "@types/axios": "^0.14.0",
     "@types/progress-stream": "^2.0.0",
+    "@types/react": "^16.9.23",
+    "@types/react-dom": "^16.9.5",
+    "@types/rimraf": "^3.0.0",
+    "@types/semver-compare": "^1.0.1",
     "@types/shelljs": "^0.8.6",
     "@types/styled-components": "^5.0.1",
     "@types/unzipper": "^0.10.2",
@@ -111,6 +58,7 @@
     "@typescript-eslint/parser": "^2.23.0",
     "css-loader": "^3.4.2",
     "electron": "^8.1.1",
+    "electron-prebuilt-compile": "8.2.0",
     "eslint": "^6.8.0",
     "eslint-plugin-import": "^2.20.1",
     "fork-ts-checker-webpack-plugin": "^3.1.1",
@@ -133,10 +81,9 @@
     "@pnotify/desktop": "^5.0.0-alpha.6",
     "@pnotify/font-awesome5": "^5.0.0-alpha.6",
     "@pnotify/font-awesome5-fix": "^5.0.0-alpha.6",
-    "@types/react": "^16.9.23",
-    "@types/react-dom": "^16.9.5",
     "JSONStream": "^1.3.5",
     "abbrev": "~1.1.1",
+    "adm-zip": "^0.4.14",
     "ansicolors": "~0.3.2",
     "ansistyles": "~0.1.3",
     "aproba": "^2.0.0",
@@ -226,6 +173,7 @@
     "osenv": "^0.1.5",
     "pacote": "^9.5.12",
     "path-is-inside": "~1.0.2",
+    "plist": "^3.0.1",
     "pnotify": "^4.0.1",
     "progress-stream": "^2.0.0",
     "promise-inflight": "~1.0.1",
@@ -243,6 +191,7 @@
     "read-package-tree": "^5.3.1",
     "readable-stream": "^3.6.0",
     "readdir-scoped-modules": "^1.1.0",
+    "recursive-copy": "^2.0.10",
     "request": "^2.88.0",
     "retry": "^0.12.0",
     "rimraf": "^2.7.1",

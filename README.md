@@ -2,6 +2,13 @@
 
 The Homey Community store is a desktop (MacOS/Windows) app that brings the user and developer together! The Community Store provides an easy way for users to side-load apps while it allows access to almost every Homey app out there.
 
+License GPL 3
+
+If you enjoy the app and can spare a few coins
+
+<a href='https://ko-fi.com/N4N51GBG5' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://az743702.vo.msecnd.net/cdn/kofi4.png?v=2' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+
+
 ## How to install it
 Just download your OS corresponding release here [https://github.com/MaxvandeLaar/homey-community-store/releases/latest](https://github.com/MaxvandeLaar/homey-community-store/releases/latest) and run the executable.
 
@@ -22,9 +29,22 @@ This all applies if you are working on MacOS Catalina (not yet configured for di
 
 ##### MacOS
 
-Just run `npm run make` and you are done.
+Just run `npm run make:darwin` and you are done.
+
+##### Linux (dep/rpm)
+
+
+Just run `npm run make:linux` and you are done.
 
 ##### Windows
-First run `npm run make:win`. You will get an error with something like `Squirrel.Utility.CreateZipFromDirectory`... ignore this it was a success!
+If you are developing on MacOS just run `npm run make:win:mac`. If not, sorry Windows, you are on your own... Linux you probably can figure it out yourself ;)  
 
-Now run `npm run build:win` and you are done. 
+
+#### IMPORTANT for deployment
+As of version 0.2.0 there is an auto-update mechanism in place. This requires a zip file called update-source.zip to be present in the github release. 
+
+You only have to run one of these. However, you can only run this after building at least for one OS. Run the corresponding command for the OS platform you at least have build.
+- `npm run make:update:darwin` 
+- `npm run make:update:linux` 
+- `npm run make:update:win` 
+

@@ -1,10 +1,11 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
-import {join} from 'path';
+import {app, BrowserWindow, ipcMain, Menu} from 'electron';
+
 declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
-import {version} from '../package.json';
-import axios from 'axios';
-const log = require('electron-log');
-const cmp = require('semver-compare');
+import {checkForStoreUpdate, updateStore} from "./util/store";
+import log from 'electron-log';
+import {initFolders} from "./util/file";
+import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
+import MenuItem = Electron.MenuItem;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -12,6 +13,11 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 }
 
 const createWindow = () => {
+  log.debug('Running app in mode:', process.env.NODE_ENV);
+  log.debug('Initialise required folders');
+  initFolders();
+
+  log.info('Create the main window');
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     height: 800,
@@ -23,6 +29,8 @@ const createWindow = () => {
     },
   });
 
+  createMenu();
+
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
@@ -32,19 +40,134 @@ const createWindow = () => {
   }
 };
 
+function createMenu() {
+  const isMac = process.platform === 'darwin'
+
+  const template: any = [
+    // { role: 'appMenu' }
+    ...(isMac ? [{
+      label: app.name,
+      submenu: [
+        {role: 'about'},
+        {
+          label: 'Check for updates', click: (menu: any, window: any) => {
+            window.webContents.send('check-for-updates');
+          }
+        },
+        {type: 'separator'},
+        {role: 'services'},
+        {type: 'separator'},
+        {role: 'hide'},
+        {role: 'hideothers'},
+        {role: 'unhide'},
+        {type: 'separator'},
+        {role: 'quit'}
+      ]
+    }] : []),
+    // { role: 'fileMenu' }
+    // {
+    //   label: 'File',
+    //   submenu: [
+    //     isMac ? { role: 'close' } : { role: 'quit' }
+    //   ]
+    // },
+    // { role: 'editMenu' }
+    // {
+    //   label: 'Edit',
+    //   submenu: [
+    //     { role: 'undo' },
+    //     { role: 'redo' },
+    //     { type: 'separator' },
+    //     { role: 'cut' },
+    //     { role: 'copy' },
+    //     { role: 'paste' },
+    //     ...(isMac ? [
+    //       { role: 'pasteAndMatchStyle' },
+    //       { role: 'delete' },
+    //       { role: 'selectAll' },
+    //       { type: 'separator' },
+    //       {
+    //         label: 'Speech',
+    //         submenu: [
+    //           { role: 'startspeaking' },
+    //           { role: 'stopspeaking' }
+    //         ]
+    //       }
+    //     ] : [
+    //       { role: 'delete' },
+    //       { type: 'separator' },
+    //       { role: 'selectAll' }
+    //     ])
+    //   ]
+    // },
+    // { role: 'viewMenu' }
+    {
+      label: 'View',
+      submenu: [
+        {role: 'reload'},
+        {role: 'forcereload'},
+        {role: 'toggledevtools'},
+        {type: 'separator'},
+        {role: 'resetzoom'},
+        {role: 'zoomin'},
+        {role: 'zoomout'},
+        {type: 'separator'},
+        {role: 'togglefullscreen'}
+      ]
+    },
+    // { role: 'windowMenu' }
+    {
+      label: 'Window',
+      submenu: [
+        {role: 'minimize'},
+        {role: 'zoom'},
+        ...(isMac ? [
+          {type: 'separator'},
+          {role: 'front'},
+          {type: 'separator'},
+          {role: 'window'}
+        ] : [
+          {role: 'close'}
+        ])
+      ]
+    },
+    {
+      role: 'help',
+      submenu: [
+        {
+          label: 'Learn More',
+          click: async () => {
+            const {shell} = require('electron')
+            await shell.openExternal('https://electronjs.org')
+          }
+        }
+      ]
+    }
+  ];
+
+  const menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(menu)
+}
+
 
 ipcMain.on('check-for-update', async (event, args) => {
-  const response = await axios.get('https://api.github.com/repos/MaxvandeLaar/homey-community-store/releases/latest').catch(console.error);
-  if (!response || response.status !== 200) {
-    return;
-  }
-  const remotePackage = response.data;
-  const remoteVersion = remotePackage.tag_name.replace(/v/gi, '');
-  if (cmp(remoteVersion, version) === 1) { //Compare semver version to detect if update is available
+  log.info('Check for Store update');
+  if (await checkForStoreUpdate()) { //Compare semver version to detect if update is available
+    log.info('App Store update is available');
     event.reply('check-for-update-completed', true);
   } else {
     log.info('Running latest version');
   }
+});
+
+ipcMain.on('update-store', async (event, args) => {
+  log.info('Store update started');
+  const update: { success: boolean, error?: any } = await updateStore();
+  if (!update.success) {
+    log.error('Store update failed', update);
+  }
+  log.info('Store update process completed');
+  event.reply('update-store-finished', update);
 });
 
 // This method will be called when Electron has finished
@@ -54,11 +177,7 @@ app.on('ready', createWindow);
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  // if (process.platform !== 'darwin') {
-    app.quit();
-  // }
+  app.quit();
 });
 
 app.on('activate', () => {

@@ -1,18 +1,19 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {ipcRenderer, shell} from 'electron';
-import {AppInfo} from "../../interfaces/App";
-import SvgLogo from "../Svg/SvgLogo";
+import {ipcRenderer} from 'electron';
+import {AppInfo} from '../../interfaces/App';
+import SvgLogo from '../Svg/SvgLogo';
 import './Content.scss';
-import AppModal from "../AppModal/AppModal";
-import {Card, Col, Button, ListGroup, Row} from "react-bootstrap";
-import Fuse from "fuse.js";
+import AppModal from '../AppModal/AppModal';
+import {Card, Col, Button, ListGroup, Row} from 'react-bootstrap';
+import Fuse from 'fuse.js';
+import Logo from '../TopBar/Logo';
+import log from 'electron-log';
 
 // @ts-ignore
 import {alert, defaultModules, defaults, Stack} from '@pnotify/core';
 // @ts-ignore
 import * as PNotifyDesktop from '@pnotify/desktop/dist/PNotifyDesktop';
-import Logo from "../TopBar/Logo";
 
 const myStack = new Stack({
   dir1: 'up',
@@ -53,7 +54,9 @@ export default function Content({loggedIn = false, searchValue = ''}) {
 
   useEffect(() => {
     if (apps === null) {
+      log.debug('No apps present, start retrieving apps');
       ipcRenderer.once('retrieve-apps-finished', (event, args) => {
+        log.debug('Finished retrieving apps', args);
         setApps(args.apps);
         setStartApps(args.apps);
         setCategories(args.categories);
@@ -63,6 +66,7 @@ export default function Content({loggedIn = false, searchValue = ''}) {
           keys: ['id', 'name.en', 'description.en', 'author.name', 'tags.en'],
           includeScore: true,
         };
+        log.debug('Set search fields and options', options);
         setFuse(new Fuse(args.apps, options));
       });
       ipcRenderer.send('retrieve-apps');
@@ -70,14 +74,8 @@ export default function Content({loggedIn = false, searchValue = ''}) {
     }
 
     ipcRenderer.on('installation-progress', (event, args) => {
-      console.log('Progress ' + args.app.name.en, args.progress);
+      log.debug('Progress ' + args.app.name.en, args.progress);
     });
-
-    // function cleanup() {
-    //   ipcRenderer.removeAllListeners('installation-finished');
-    //   ipcRenderer.removeAllListeners('installation-progress');
-    //   ipcRenderer.removeAllListeners('installation-failed');
-    // }
   }, [apps, startApps]);
 
   if (!listeners) {
@@ -85,25 +83,10 @@ export default function Content({loggedIn = false, searchValue = ''}) {
 
   }
 
-  function removeFromList(app: AppInfo) {
-    if (localStorage.getItem(app.id)) {
-      localStorage.removeItem(app.id);
-    }
-  }
-
 
   function install(app: AppInfo) {
-    // localStorage.setItem(app.id, 'true');
+    log.debug('Install app', app);
     ipcRenderer.send('install', {repo: app.repo, homeyApp: app});
-  }
-
-  function openLink(url: string) {
-    shell.openExternal(url);
-  }
-
-  function openModal(app: AppInfo) {
-    setSelectedApp(app);
-    document.body.style.overflow = "hidden";
   }
 
   function closeModal() {
@@ -117,7 +100,7 @@ export default function Content({loggedIn = false, searchValue = ''}) {
         {
           loadingApps &&
           <Col className={'text-center'}>
-            <Logo width={'200px'} height={'200px'} classes={'spinner'}/>
+            <Logo width={'200px'} height={'200px'} classes={'spinner'} />
           </Col>
         }
         {!loadingApps && categories?.length && categories.map((category: string, index: number) =>
@@ -162,6 +145,7 @@ function App({onClickApp, onInstall, app, loggedIn}: { onClickApp: (app: AppInfo
     ipcRenderer.removeAllListeners(`installation-finished-${app.id}`);
 
     ipcRenderer.on(`installation-finished-${app.id}`, (event, args) => {
+      log.debug('App installation finished', app.id, args);
       setIsInstalling(false);
       if (args.error) {
         let error = args.error;
@@ -206,9 +190,7 @@ function App({onClickApp, onInstall, app, loggedIn}: { onClickApp: (app: AppInfo
       text: `${app.name.en} will be installed as soon as possible, please keep the store running!`,
       type: 'notice'
     });
-    // onInstall(app);
   }
-
 
   return (
     <ListGroup.Item as={'div'} key={app.id}>
