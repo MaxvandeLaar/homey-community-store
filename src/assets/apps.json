@@ -82,5 +82,8 @@
   },
   "com.athom.visionv2": {
     "repo": "https://github.com/HighDangerr/com.athom.visionv2"
+  },
+  "nu.baretta.openweathermap": {
+    "repo": "https://github.com/abaretta/nu.baretta.openweathermap"
   }
 }
