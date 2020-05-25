@@ -8,15 +8,15 @@
     "compile": "electron-webpack",
     "dist": "yarn compile && electron-builder",
     "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null",
-    "dist:all": "yarn compile && electron-builder -wlm --x64"
+    "dist:all": "yarn compile && electron-builder -wlm --x64",
+    "dist:mac": "yarn compile && electron-builder -m --x64",
+    "dist:win": "yarn compile && electron-builder -w --x64",
+    "dist:linux": "yarn compile && electron-builder -l --x64"
   },
   "build": {
     "appId": "com.maxvandelaar.homey-community-store",
     "directories": {
-      "output": "release",
-      "files": [
-        "src/main/homey/assets/1px.png"
-      ]
+      "output": "release"
     },
     "mac": {
       "darkModeSupport": true,
@@ -26,13 +26,16 @@
     },
     "win": {
       "target": [
-        "portable"
+        "nsis"
       ]
     },
     "linux": {
       "target": [
         "AppImage"
       ]
+    },
+    "nsis": {
+      "deleteAppDataOnUninstall": true
     }
   },
   "electronWebpack": {
@@ -50,6 +53,7 @@
     "colors": "^1.1.2",
     "deepmerge": "^2.1.0",
     "electron-log": "^4.1.2",
+    "electron-updater": "^4.3.1",
     "express": "^4.16.4",
     "figures": "^2.0.0",
     "filesize": "^3.6.1",
