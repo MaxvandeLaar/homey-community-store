@@ -11,13 +11,23 @@
     "dist:all": "yarn compile && electron-builder -wlm --x64",
     "dist:mac": "yarn compile && electron-builder -m --x64",
     "dist:win": "yarn compile && electron-builder -w --x64",
-    "dist:linux": "yarn compile && electron-builder -l --x64"
+    "dist:linux": "yarn compile && electron-builder -l --x64",
+    "publish": "build --mac --win --linux -p always"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MaxvandeLaar/homey-community-store.git"
   },
   "build": {
     "appId": "com.maxvandelaar.homey-community-store",
     "directories": {
       "output": "release"
     },
+    "publish": [{
+      "provider": "github",
+      "owner": "MaxvandeLaar",
+      "repo": "homey-community-store"
+    }],
     "mac": {
       "darkModeSupport": true,
       "target": [

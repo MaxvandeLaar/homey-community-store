@@ -6,11 +6,38 @@ import {format as formatUrl} from 'url'
 import './utils/auth';
 import './utils/apps';
 import './utils/install';
+import { autoUpdater } from "electron-updater";
+import log from 'electron-log';
+
+autoUpdater.logger = log;
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // global reference to mainWindow (necessary to prevent window from being garbage collected)
 let mainWindow: BrowserWindow | null
+
+autoUpdater.on('checking-for-update', () => {
+  log.debug('Checking for update...');
+})
+autoUpdater.on('update-available', (info) => {
+  log.debug('Update available.');
+})
+autoUpdater.on('update-not-available', (info) => {
+  log.debug('Update not available.');
+})
+autoUpdater.on('error', (err) => {
+  log.debug('Error in auto-updater. ' + err);
+})
+autoUpdater.on('download-progress', (progressObj) => {
+  let log_message = "Download speed: " + progressObj.bytesPerSecond;
+  log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+  log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+  log.debug(log_message);
+})
+autoUpdater.on('update-downloaded', (info) => {
+  log.debug('Update downloaded');
+  autoUpdater.quitAndInstall();
+});
 
 function createMainWindow() {
   const window = new BrowserWindow({
@@ -69,5 +96,6 @@ app.on('activate', () => {
 
 // create main BrowserWindow when electron is ready
 app.on('ready', () => {
-  mainWindow = createMainWindow()
+  mainWindow = createMainWindow();
+  autoUpdater.checkForUpdatesAndNotify();
 })
