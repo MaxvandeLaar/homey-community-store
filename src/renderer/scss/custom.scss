@@ -1,0 +1,18 @@
+
+
+@import '~bootstrap';
+@import '~bootstrap-vue';
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: lighten($dark, 2%);
+  }
+}
+
+:root{
+  --dark: #393f46;
+}
+
+.hover {
+  cursor: pointer;
+}

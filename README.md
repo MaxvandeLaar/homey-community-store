@@ -1,42 +1,46 @@
-# Homey Community Store
+# electron-webpack-quick-start
+> A bare minimum project structure to get started developing with [`electron-webpack`](https://github.com/electron-userland/electron-webpack).
 
-The Homey Community store is a desktop (MacOS/Windows) app that brings the user and developer together! The Community Store provides an easy way for users to side-load apps while it allows access to almost every Homey app out there.
+Thanks to the power of `electron-webpack` this template comes packed with...
 
-License GPL 3
+* Use of [`webpack-dev-server`](https://github.com/webpack/webpack-dev-server) for development
+* HMR for both `renderer` and `main` processes
+* Use of [`babel-preset-env`](https://github.com/babel/babel-preset-env) that is automatically configured based on your `electron` version
+* Use of [`electron-builder`](https://github.com/electron-userland/electron-builder) to package and build a distributable electron application
 
-If you enjoy the app and can spare a few coins
+Make sure to check out [`electron-webpack`'s documentation](https://webpack.electron.build/) for more details.
 
-<a href='https://ko-fi.com/N4N51GBG5' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://az743702.vo.msecnd.net/cdn/kofi4.png?v=2' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+## Getting Started
+Simply clone down this repository, install dependencies, and get started on your application.
 
+The use of the [yarn](https://yarnpkg.com/) package manager is **strongly** recommended, as opposed to using `npm`.
 
-## How to install it
-Just download your OS corresponding release here [https://github.com/MaxvandeLaar/homey-community-store/releases/latest](https://github.com/MaxvandeLaar/homey-community-store/releases/latest) and run the executable.
+```bash
+# create a directory of your choice, and copy template using curl
+mkdir new-electron-webpack-project && cd new-electron-webpack-project
+curl -fsSL https://github.com/electron-userland/electron-webpack-quick-start/archive/master.tar.gz | tar -xz --strip-components 1
 
-Please note that I did not sign the app as I am not willing to pay full price for Microsoft and Apple certificates so you might need to allow the app to run. It is definitely safe.
+# or copy template using git clone
+git clone https://github.com/electron-userland/electron-webpack-quick-start.git
+cd electron-webpack-quick-start
+rm -rf .git
 
-## How to get your app listed
-Just create an issue or you can create a pull request and add your repo here [https://github.com/MaxvandeLaar/homey-community-store/blob/master/src/assets/apps.json](https://github.com/MaxvandeLaar/homey-community-store/blob/master/src/assets/apps.json). The app needs to conform to the same standards as official apps. As long as it runs and has the required files, it will be accepted. No matter if it's a duplicate or too complex app 😊  
+# install dependencies
+yarn
+```
 
-### Development info
+### Development Scripts
 
-#### Develop
-Just clone the repo and run `npm install`. Now you can use `npm start` to start the dev app. 
+```bash
+# run application in development mode
+yarn dev
 
-#### Building
-So this is a bit of a pain and probably caused by some bad webpack config.
+# compile source code and create webpack output
+yarn compile
 
-This all applies if you are working on MacOS Catalina (not yet configured for different development OS). 
+# `yarn compile` & create build with electron-builder
+yarn dist
 
-##### MacOS
-
-Just run `npm run make` and you are done.
-
-##### Windows
-First run `npm run make:win`. You will get an error with something like `Squirrel.Utility.CreateZipFromDirectory`... ignore this it was a success!
-
-Now run `npm run build:win` and you are done.
-
-#### IMPORTANT for deployment
-As of version 0.2.0 there is an auto-update mechanism in place. This requires a zip file called update-source.zip to be present in the github release. 
-
-To build this, first run the MacOs build and after that run `npm run make:update`. 
+# `yarn compile` & create unpacked build with electron-builder
+yarn dist:dir
+```

@@ -93,3 +93,7 @@ tmp
 *.iml
 
 .idea
+
+scripts
+release
+dist

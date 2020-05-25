@@ -1,20 +1,15 @@
 export interface AppInfo {
   repo: string;
   id: string;
-  name: {
-    en: string;
-  },
+  locales: {[key: string]: {[key: string]: any}};
+  name: { [key: string]: string };
   version: string;
   icon: string;
   compatibility: string;
   sdk: number;
   brandColor?: string;
-  description: {
-    en: string;
-  } | string;
-  tags: {
-    en: string[];
-  };
+  description: {[key: string]: string};
+  tags: {[key: string]: string[]};
   category: string[];
   images: {
     large: string;
@@ -35,6 +30,7 @@ export interface AppInfo {
     totalSteps?: number;
     message?: string;
   };
+  rawUrl: string;
   readMe?: string;
   drivers: {
     id: string;
