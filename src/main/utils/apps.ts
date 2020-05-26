@@ -1,4 +1,4 @@
-import {info, error, debug} from "electron-log";
+import {error} from "electron-log";
 import AWS from "aws-sdk";
 import {ipcMain, app} from "electron";
 import fetch from 'node-fetch';
@@ -20,10 +20,8 @@ ipcMain.on('retrieve-apps', async (event, args) => {
   if (!result) {
     return;
   }
-  debug('result!', result);
   const apps: AppInfo[] = [];
   const appPromises = result.map(async (app: { id: string, versions: any[] }) => {
-    info(app);
     app.versions.sort((a, b) => {
       return cmp(b.version, a.version);
     });
@@ -84,9 +82,6 @@ ipcMain.on('retrieve-apps', async (event, args) => {
     });
   });
   categories.sort();
-  debug('Categories are', categories);
-
-
   event.reply('retrieve-apps-complete', {apps, categories, allApps: result});
 });
 

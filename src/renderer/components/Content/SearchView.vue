@@ -1,6 +1,6 @@
 <template>
   <b-row>
-    <AppCard v-for="app in apps" :app="app" :dark-mode="darkMode" />
+    <AppCard v-for="app in apps" :app="app" :dark-mode="darkMode" :key="app.id"/>
   </b-row>
 </template>
 

@@ -4,10 +4,8 @@
             :homey="homey"
             @search-changed="searchChanged($event)"
             :profile="profile" :authenticated="authenticated" />
-    <b-container fluid>
-      <SearchView :apps="filteredApps" v-if="searchValue" :dark-mode="darkMode" />
-      <Apps :categories="categories" :dark-mode="darkMode" v-if="!searchValue" />
-    </b-container>
+    <router-view :searchValue="searchValue" :dark-mode="darkMode"></router-view>
+    <notifications group="app" position="bottom left" />
   </div>
 </template>
 
@@ -16,7 +14,6 @@
   import {remote, ipcRenderer} from "electron";
   import Apps from "../components/Content/Apps";
   import SearchView from "../components/Content/SearchView";
-  import Fuse from "fuse.js";
 
   export default {
     name: "Index",
@@ -33,23 +30,44 @@
       }
     },
     created() {
-      ipcRenderer.once('authentication-check-complete', (event, args) => {
+      ipcRenderer.on('authentication-check-complete', (event, args) => {
         const {authenticated, profile, activeHomey} = args;
         this.authenticated = authenticated;
+        this.$store.commit('setAuthenticated', authenticated);
         this.profile = profile;
         this.homey = activeHomey;
-        console.log('Profile', profile);
       });
       ipcRenderer.send('authentication-check');
+      ipcRenderer.on('install-app-completed', (event, args) => {
+        const {error, app} = args;
+        this.$store.commit('installAppDone', app.id);
+        if (args.error) {
+          this.errorNotification(app, error);
+        } else {
+          this.successNotification(app);
+        }
+      });
+      ipcRenderer.on('install-app-progress', (event, args) => {
+        this.$store.commit('installAppProgress', {
+          appId: args.app.id,
+          event: {name: args.event, progress: args.progress}
+        })
+      });
+      ipcRenderer.on('retrieve-apps-complete', (event, args) => {
+        this.$store.commit('setApps', args.apps);
+        this.$store.commit('setCategories', args.categories);
+        this.$store.commit('setAllApps', args.allApps);
+      });
+    },
+    destroyed() {
+      ipcRenderer.removeAllListeners('authentication-check-complete');
+      ipcRenderer.removeAllListeners('install-app-completed');
+      ipcRenderer.removeAllListeners('install-app-progress');
+      ipcRenderer.removeAllListeners('retrieve-apps-complete');
     },
     mounted() {
       remote.nativeTheme.on('updated', () => {
         this.darkMode = remote.nativeTheme.shouldUseDarkColors;
-      });
-      ipcRenderer.on('retrieve-apps-complete', (event, args) => {
-        this.$store.commit('setApps', args.apps);
-        this.categories = args.categories;
-        this.$store.commit('setAllApps', args.allApps);
       });
       ipcRenderer.send('retrieve-apps');
     },
@@ -60,11 +78,13 @@
       signedIn(args) {
         const {authenticated, profile, activeHomey} = args;
         this.authenticated = authenticated;
+        this.$store.commit('setAuthenticated', authenticated);
         this.profile = profile;
         this.homey = activeHomey;
       },
       signedOut() {
         this.authenticated = false;
+        this.$store.commit('setAuthenticated', false);
         this.profile = null;
         this.homey = null;
       },
@@ -73,26 +93,44 @@
       },
       searchChanged(value) {
         this.searchValue = value
-        const locale = this.$i18n.locale.split('-')[0];
-        const options = {
-          keys: [
-            {
-              name: `name.${locale}`,
-              weight: 2
-            },
-            {
-              name: `tags.${locale}`,
-              weight: 1
-            }
-          ],
-          includeScore: true,
-          useExtendedSearch: true
-        };
-        const fuse = new Fuse(this.$store.state.apps, options);
-        const results = fuse.search(this.searchValue);
-        this.filteredApps = results.map((item) => item.item);
+      },
+      getLocale() {
+        return this.$i18n.locale.split('-')[0];
+      },
+      translation(key, app) {
+        return app[key][this.getLocale()] || app[key].en;
+      },
+      errorNotification(app, error) {
+        Notification.requestPermission().then((result) => {
+          new Notification(`Failed installing ${this.translation('name', app)}`, {
+            body: `An error occurred when installing ${this.translation('name', app)}!`,
+            icon: app.images.small || null
+          });
+        });
+        this.$notify({
+          group: 'app',
+          title: `Installation ${this.translation('name', app)} Failed`,
+          text: JSON.stringify(error),
+          type: 'error',
+          duration: 10000
+        });
+      },
+      successNotification(app) {
+        Notification.requestPermission().then((result) => {
+          new Notification(`Successfully installed ${this.translation('name', app)}`, {
+            body: `Thanks for installing ${this.translation('name', app)}!`,
+            icon: app.images.small || null
+          });
+        });
+        this.$notify({
+          group: 'app',
+          title: `Installation ${this.translation('name', app)} finished`,
+          text: `Thanks for installing ${this.translation('name', app)}! For issues with the app, please contact the author.`,
+          type: 'success',
+          duration: 10000
+        });
       }
-    }
+    },
   }
 </script>
 

@@ -31,10 +31,15 @@
       <b-col>
         <small>v{{currentApp.version}}</small>
       </b-col>
+      <b-col>
+        <b-progress v-if="currentApp.progress" :max="100" height="1.5rem">
+          <b-progress-bar :value="currentApp.progress.progress" :variant="animateProgress.color" :animated="animateProgress.animated" :label="currentApp.progress.name"></b-progress-bar>
+        </b-progress>
+      </b-col>
       <b-col class="text-right">
-        <b-button v-if="versions.length < 1" variant="success" @click="install(currentApp.version)" class="m-2" :disabled="isInstalling">{{$t('install')}} v{{currentApp.version}}</b-button>
-        <b-dropdown v-else split variant="success" @click="install(currentApp.version)" :text="$t('install') + ' v' + currentApp.version" class="m-2" :disabled="isInstalling">
-          <b-dropdown-item v-for="appVersion in versions" @click="changeApp(appVersion)" :variant="dropDownColor">v{{appVersion.version}}</b-dropdown-item>
+        <b-button v-if="versions.length < 1" variant="success" @click="install(currentApp.version)" class="m-2" :disabled="isInstalling || !isAuthenticated">{{$t('install')}} v{{currentApp.version}}</b-button>
+        <b-dropdown v-else split variant="success" @click="install(currentApp.version)" :text="$t('install') + ' v' + currentApp.version" class="m-2" :disabled="isInstalling || !isAuthenticated">
+          <b-dropdown-item v-for="appVersion in versions" :key="appVersion.version" @click="changeApp(appVersion)" :variant="dropDownColor">v{{appVersion.version}}</b-dropdown-item>
         </b-dropdown>
       </b-col>
     </b-row>
@@ -49,7 +54,6 @@
 <script>
   import Icon from "../Icon/Icon";
   import {ipcRenderer} from 'electron';
-  import fetch from 'node-fetch';
   import VueMarkdown from 'vue-markdown'
 
   export default {
@@ -94,15 +98,16 @@
         this.$store.commit('installApp', this.currentApp.id);
       },
       async onOpen(){
-        console.log('app', this.app);
         await this.changeApp(this.app);
-        console.log('After', this.currentApp);
       },
       async changeApp(appVersion) {
         this.currentApp = appVersion;
       }
     },
     computed: {
+      isAuthenticated(){
+        return this.$store.getters.isAuthenticated();
+      },
       navBarColor() {
         return this.darkMode ? 'dark' : 'light'
       },
@@ -110,12 +115,25 @@
         return this.darkMode ? 'light' : 'dark'
       },
       isInstalling(){
-        const app = this.$store.state.apps.find(app => app.id === this.app.id);
+        const app = this.$store.getters.getAppById(this.currentApp.id);
         return app ? app.installing : false;
       },
       versions(){
-        const app = this.$store.state.allApps.find((app) => app.id === this.currentApp.id);
+        const app = this.$store.getters.getAppById(this.currentApp.id);
         return app.versions.filter(app => app.version !== this.currentApp.version);
+      },
+      animateProgress() {
+        const app = this.$store.getters.getAppById(this.currentApp.id);
+        if (!app.progress){
+          return {
+            color: 'dark',
+            animated: false
+          }
+        }
+        return {
+          color: app.progress.name.toLowerCase() === 'installing' ? 'success' : 'info',
+          animated: app.progress.name.toLowerCase() === 'installing'
+        }
       }
     }
   }
@@ -128,6 +146,9 @@
   .modal-image {
     max-height: 300px;
     object-fit: cover;
+  }
+  .progress-bar {
+    transition: none !important;
   }
 
 </style>

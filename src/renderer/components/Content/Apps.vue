@@ -1,32 +1,32 @@
 <template>
   <div>
-    <div v-for="category in categories" class="category-container">
+    <div v-for="category in categories" class="category-container" :key="category">
       <b-row align-v="baseline" :class="textColor">
         <b-col cols="auto">
           <h2>{{title(category)}}</h2>
         </b-col>
-        <b-col v-if="filterAppList(category).length > 9">
-          See all
+        <b-col>
+          <router-link :to="`/category/${category}`">See all</router-link>
         </b-col>
       </b-row>
       <b-row>
         <b-col cols="4" class="d-flex">
           <b-list-group>
-            <b-list-group-item v-for="app in getAppList(category, 0)">
+            <b-list-group-item v-for="app in getAppList(category, 0)" :key="app.id">
               <AppListItem :app="app" :dark-mode="darkMode" :category="category" />
             </b-list-group-item>
           </b-list-group>
         </b-col>
         <b-col cols="4" class="d-flex">
           <b-list-group>
-            <b-list-group-item v-for="app in getAppList(category, 3)">
+            <b-list-group-item v-for="app in getAppList(category, 3)" :key="app.id">
               <AppListItem :app="app" :dark-mode="darkMode" :category="category" />
             </b-list-group-item>
           </b-list-group>
         </b-col>
         <b-col cols="4" class="d-flex">
           <b-list-group>
-            <b-list-group-item v-for="app in getAppList(category, 6)">
+            <b-list-group-item v-for="app in getAppList(category, 6)" :key="app.id">
               <AppListItem :app="app" :dark-mode="darkMode" :category="category" />
             </b-list-group-item>
           </b-list-group>
@@ -43,19 +43,17 @@
   export default {
     name: "Apps",
     components: {AppListItem},
+    data() {
+      return {
+        lockScroll: false
+      }
+    },
     props: {
       categories: {
         default: [],
         type: Array
       },
       darkMode: Boolean
-    },
-    created() {
-      ipcRenderer.on('install-app-completed', (event, args) => {
-        console.log('Installation complete', args);
-        this.$store.commit('installAppDone', args.app.id);
-        alert(`Completed installation ${args.app.name.en}`);
-      });
     },
     methods: {
       filterAppList(category) {
@@ -84,6 +82,10 @@
   $black: #000;
   $light-lighten: 90%;
   $dark-lighten: 50%;
+
+  .lock-scroll {
+    overflow: hidden;
+  }
 
   .category-container {
     border-bottom: 2px solid lighten($black, $light-lighten);

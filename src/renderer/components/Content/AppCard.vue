@@ -1,30 +1,27 @@
 <template>
-  <b-col cols="4 mb-5">
-    <b-card no-body :class="`overflow-hidden hover h-100 ${textColor} ${bgColor}`" @click="openModal(`${app.id}-search-modal`)">
-      <b-row no-gutter class="h-100" s>
-        <b-col cols="4">
-          <b-card-img v-if="imagePresent" :src="app.images.small" alt="Image" class="rounded-0 card-image" @error="noImage"/>
-        </b-col>
-        <b-col md="8">
-          <b-card-body>
-            <b-card-title>{{translation('name')}}</b-card-title>
-            <b-card-text>
-              {{translation('description')}}
-            </b-card-text>
-          </b-card-body>
-        </b-col>
-      </b-row>
-    </b-card>
+  <b-col cols="4" class="mb-5 p-2">
+    <b-row align-v="center" @click="openModal(`${app.id}-search-modal`)" class="hover app-card">
+      <b-col cols="auto">
+        <Icon :app="app"/>
+      </b-col>
+      <b-col>
+        <b-row :class="textColor">
+          <b-col cols="12">{{translation('name')}} <small>v{{app.version}}</small><span v-if="app.installing">Installing!</span></b-col>
+          <b-col cols="12" class="ellipsis"><small :class="textColor">{{translation('description')}}</small></b-col>
+        </b-row>
+      </b-col>
+    </b-row>
     <AppModal :app="app" category="search" :dark-mode="darkMode" />
   </b-col>
 </template>
 
 <script>
   import AppModal from "./AppModal";
+  import Icon from '../Icon/Icon';
 
   export default {
     name: "AppCard",
-    components: {AppModal},
+    components: {AppModal, Icon},
     data() {
       return {
         imagePresent: true
@@ -52,22 +49,27 @@
     computed: {
       textColor() {
         return this.darkMode ? 'text-light' : 'text-dark';
-      },
-      bgColor() {
-        return this.darkMode ? 'bg-dark' : 'bg-light';
       }
     }
   }
 </script>
 
 <style lang="scss" scoped>
-  .card {
-    border: none;
-    box-shadow: 0 2px 4px 0 rgba(45, 45, 45, .23), 0 2px 4px 0 rgba(45, 45, 45, .05);
+  $black: #000;
+  $light-lighten: 90%;
 
-    .card-image {
-      height: 100%;
-      object-fit: cover;
-    }
+  .app-card {
+    padding-bottom: 1rem;
+    border-bottom: 2px solid lighten($black, $light-lighten);
+    margin-left:0;
+    margin-right:0;
+  }
+
+  .ellipsis {
+    text-overflow: ellipsis;
+
+    /* Required for text-overflow to do anything */
+    white-space: nowrap;
+    overflow: hidden;
   }
 </style>

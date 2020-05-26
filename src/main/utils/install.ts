@@ -1,5 +1,5 @@
 import {AppInfo} from "../../interfaces/App";
-import {ipcMain} from "electron";
+import {ipcMain, IpcMainEvent} from "electron";
 import {info, debug, error} from 'electron-log';
 import {apiAccess} from "./auth";
 import AWS from "aws-sdk";
@@ -14,6 +14,10 @@ import slash from 'slash';
 ipcMain.on('install-app', async (event, args) => {
   const {app, version} = args;
   debug('Install App');
+  event.reply('install-app-progress', {
+    event: 'Start',
+    app,
+  });
   const authenticated = await apiAccess().catch(error);
   debug('authenticated?', !!authenticated);
   if (!authenticated) {
@@ -22,7 +26,7 @@ ipcMain.on('install-app', async (event, args) => {
   AWS.config.update(authenticated);
   debug('Start download');
   const downloadPath = `${appFolder()}/apps/${app.id}/${version}/`;
-  const downloadFile = await downloadApp(downloadPath, app, version).catch(error);
+  const downloadFile = await downloadApp(downloadPath, app, version, event).catch(error);
   if (!downloadFile) {
     return;
   }
@@ -30,6 +34,11 @@ ipcMain.on('install-app', async (event, args) => {
   info('UNZIPPED', appPath);
 
   try {
+    event.reply('install-app-progress', {
+      event: 'Installing',
+      app,
+      progress: 100
+    });
     debug('Init AthomApp Api', app.id);
     const appAPI = new AthomApp(appPath);
     appAPI.path = slash(appAPI.path);
@@ -37,6 +46,7 @@ ipcMain.on('install-app', async (event, args) => {
     appAPI._appJsonPath = slash(appAPI._appJsonPath);
     appAPI._pluginsPath = slash(appAPI._pluginsPath);
     appAPI._homeyComposePath = slash(appAPI._homeyComposePath);
+
     const result = await appAPI.install();
     if (Object.keys(result).length > 0) {
       info('Installation complete', app.id, result);
@@ -60,8 +70,12 @@ ipcMain.on('install-app', async (event, args) => {
 
 });
 
-async function downloadApp(downloadPath: string, app: AppInfo, version: string): Promise<string> {
-
+async function downloadApp(downloadPath: string, app: AppInfo, version: string, event: IpcMainEvent): Promise<string> {
+  event.reply('install-app-progress', {
+    event: 'Download',
+    app,
+    progress: 0
+  });
   return new Promise(async (resolve, reject) => {
     ensureDirSync(downloadPath);
     const downloadFile = `${downloadPath}dist.zip`
@@ -81,21 +95,44 @@ async function downloadApp(downloadPath: string, app: AppInfo, version: string):
       return reject({error: 'No file found'});
     }
 
+    const s3Size = await s3.headObject({
+      Bucket: 'homey-community-store',
+      Key: remoteFile.Key
+    }).promise();
+    const downloadSize = s3Size.ContentLength || 100000000;
+
     const s3Stream = s3.getObject({
       Bucket: 'homey-community-store',
       Key: remoteFile.Key
     }).createReadStream();
+
     const fileStream = createWriteStream(downloadFile);
 
     s3Stream.on('error', (err) => {
       error(err);
       reject(err);
     });
+    let downloadCounter = 0;
 
-    s3Stream.pipe(fileStream).on('error', (err) => {
-      error('File Stream:', err);
-      reject(err)
-    }).on('close', () => {
+
+    s3Stream.on('data', (data) => {
+      downloadCounter += data.length;
+      const percentage = Math.round(downloadCounter * 100 / downloadSize);
+      if (percentage % 10 === 0) {
+        event.reply('install-app-progress', {
+          event: 'Downloading',
+          app,
+          progress: percentage
+        });
+      }
+    });
+
+    s3Stream.pipe(fileStream)
+      .on('error', (err) => {
+        error('File Stream:', err);
+        reject(err)
+      })
+      .on('close', () => {
       resolve(downloadFile);
     });
   });

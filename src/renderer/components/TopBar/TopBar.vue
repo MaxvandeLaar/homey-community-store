@@ -14,7 +14,7 @@
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto align-items-center">
         <b-nav-item-dropdown :text="activeHomey" right v-if="!!profile" menu-class="menu-dropdown">
-          <b-dropdown-item v-for="homey in profile.homeys" @click="setHomey(homey)" :variant="dropDownColor">
+          <b-dropdown-item v-for="homey in profile.homeys" @click="setHomey(homey)" :variant="dropDownColor" :key="homey.id">
             {{homey.name}}
           </b-dropdown-item>
         </b-nav-item-dropdown>
