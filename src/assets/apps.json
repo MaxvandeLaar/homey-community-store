@@ -85,5 +85,8 @@
   },
   "eu.carp3-noctem.enigma2": {
     "repo": "https://github.com/carp3-noctem/eu.carp3-noctem.enigma2#beta"
+  },
+  "com.tesla.charger": {
+    "repo": "https://github.com/balmli/com.tesla.charger#master"
   }
 }
