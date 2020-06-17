@@ -88,5 +88,7 @@
   },
   "com.tesla.charger": {
     "repo": "https://github.com/balmli/com.tesla.charger#master"
-  }
+  },
+  "com.community.store": {
+    "repo": "https://github.com/AdyRock/com.community.store"
 }
