@@ -1,50 +1,27 @@
 # Homey Community Store
 
-The Homey Community store is a desktop (MacOS/Windows) app that brings the user and developer together! The Community Store provides an easy way for users to side-load apps while it allows access to almost every Homey app out there.
+The Homey Community store is the alternative store for installing app on your Homey. You can find the store here: [https://store.homey.community](https://store.homey.community)
 
-License GPL 3
-
-If you enjoy the app and can spare a few coins
+If you enjoy the app and can spare a few coins... hosting the store sadly isn't free and it would help me to keep it ads free.
 
 <a href='https://ko-fi.com/N4N51GBG5' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://az743702.vo.msecnd.net/cdn/kofi4.png?v=2' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+<a href='https://paypal.me/maxvdlaar?locale.x=nl_NL' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_74x46.jpg' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
 
-## How to install it
-Just download your OS corresponding release here [https://github.com/MaxvandeLaar/homey-community-store/releases/latest](https://github.com/MaxvandeLaar/homey-community-store/releases/latest) and run the executable.
-
-Please note that I did not sign the app as I am not willing to pay full price for Microsoft and Apple certificates so you might need to allow the app to run. It is definitely safe.
+## Important
+This repo does not include any active code anymore and is purely meant for bug reports and feature requests.
 
 ## How to get your app listed
-Just create an issue or you can create a pull request and add your repo here [https://github.com/MaxvandeLaar/homey-community-store/blob/master/src/assets/apps.json](https://github.com/MaxvandeLaar/homey-community-store/blob/master/src/assets/apps.json). The app needs to conform to the same standards as official apps. As long as it runs and has the required files, it will be accepted. No matter if it's a duplicate or too complex app 😊  
+Message me on Slack [@MaxvandeLaar](https://homeyusers.slack.com/archives/DUV9LK6RF).
+ 
+The app needs to conform to the same standards as official apps. As long as it runs and has the required files, it will be accepted. No matter if it's a duplicate or too complex app 😊  
 
-### Development info
+## Developers wanted!
 
-#### Develop
-Just clone the repo and run `npm install`. Now you can use `npm start` to start the dev app. 
+* Would you like to contribute to this project besides donating?
 
-#### Building
-So this is a bit of a pain and probably caused by some bad webpack config.
+If you answer yes, please message me on Slack [@MaxvandeLaar](https://homeyusers.slack.com/archives/DUV9LK6RF).
 
-This all applies if you are working on MacOS Catalina (not yet configured for different development OS). 
+* You don't know how to program?
 
-##### MacOS
-
-Just run `npm run make:darwin` and you are done.
-
-##### Linux (dep/rpm)
-
-
-Just run `npm run make:linux` and you are done.
-
-##### Windows
-If you are developing on MacOS just run `npm run make:win:mac`. If not, sorry Windows, you are on your own... Linux you probably can figure it out yourself ;)  
-
-
-#### IMPORTANT for deployment
-As of version 0.2.0 there is an auto-update mechanism in place. This requires a zip file called update-source.zip to be present in the github release. 
-
-You only have to run one of these. However, you can only run this after building at least for one OS. Run the corresponding command for the OS platform you at least have build.
-- `npm run make:update:darwin` 
-- `npm run make:update:linux` 
-- `npm run make:update:win` 
-
+Do you know how to ask for help and how to use Google? Most devs are just really good at using Google and I have learned that most Homey apps aren't written by professional developers. I am more than happy to assist you while you help improve the HCS!
